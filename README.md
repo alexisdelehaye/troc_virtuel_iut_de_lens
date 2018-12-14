@@ -43,7 +43,7 @@ Ce sera forcément une application web accessible avec le téléphone ...
 ### Dates importantes : 
 
 * Début du projet : 4/12/2018
-* Soutenance : semaine du 19/02/2019
+* Soutenance : semaine du 23/04/2019
 
 ### Les attendus
 
