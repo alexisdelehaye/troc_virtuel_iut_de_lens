@@ -44,3 +44,14 @@ Ce sera forcément une application web accessible avec le téléphone ...
 
 * Début du projet : 4/12/2018
 * Soutenance : semaine du 19/02/2019
+
+### Les attendus
+
+En fin de projet, chaque groupe proposera un rapport et effectuera une soutenance.
+
+* Une synthèse et une présentation technique du projet dans un rapport d'une quinzaine de pages;
+* Une soutenance de 20 minutes.
+
+### Évaluation
+
+La note sera calculée à partir de la moyenne de la qualité technique (coef 40%) du rapport (coef 30%) de la soutenance (coef 30%)
