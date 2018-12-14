@@ -38,7 +38,8 @@ Ce sera forcément une application web accessible avec le téléphone ...
 * HTML, CSS
 * Javascript
 * SQL
-* 
+
+
 ### Dates importantes : 
 
 * Début du projet : 4/12/2018
