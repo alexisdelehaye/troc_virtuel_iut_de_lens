@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="profil")
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ProfilRepository")
  */
 class Profil
 {

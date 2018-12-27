@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="conversation", indexes={@ORM\Index(name="idObjetConcerne_idx", columns={"idObjetConcerne"}), @ORM\Index(name="idEnvoyeur_idx", columns={"idEnvoyeur"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ConversationRepository")
  */
 class Conversation
 {
