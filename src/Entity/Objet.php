@@ -15,7 +15,7 @@ class Objet
     /**
      * @var int
      *
-     * @ORM\Column(name="idObjet", type="integer", nullable=false)
+     * @ORM\Column(name="idobjet", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

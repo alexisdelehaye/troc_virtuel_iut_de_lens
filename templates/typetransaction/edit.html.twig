@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Typetransaction{% endblock %}
+
+{% block body %}
+    <h1>Edit Typetransaction</h1>
+
+    {{ include('typetransaction/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('typetransaction_index') }}">back to list</a>
+
+    {{ include('typetransaction/_delete_form.html.twig') }}
+{% endblock %}

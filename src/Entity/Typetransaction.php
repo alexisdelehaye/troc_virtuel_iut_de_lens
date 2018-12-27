@@ -15,7 +15,7 @@ class Typetransaction
     /**
      * @var int
      *
-     * @ORM\Column(name="idtypeTransaction", type="integer", nullable=false)
+     * @ORM\Column(name="idtypetransaction", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

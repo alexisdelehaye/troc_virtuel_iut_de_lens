@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil index{% endblock %}
+
+{% block body %}
+    <h1>Profil index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Idprofil</th>
+                <th>Nomprofil</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for profil in profils %}
+            <tr>
+                <td>{{ profil.idprofil }}</td>
+                <td>{{ profil.nomprofil }}</td>
+                <td>
+                    <a href="{{ path('profil_show', {'idprofil': profil.idprofil}) }}">show</a>
+                    <a href="{{ path('profil_edit', {'idprofil': profil.idprofil}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('profil_new') }}">Create new</a>
+{% endblock %}

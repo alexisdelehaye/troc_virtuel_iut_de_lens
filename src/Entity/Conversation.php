@@ -15,7 +15,7 @@ class Conversation
     /**
      * @var int
      *
-     * @ORM\Column(name="idConversation", type="integer", nullable=false)
+     * @ORM\Column(name="idconversation", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

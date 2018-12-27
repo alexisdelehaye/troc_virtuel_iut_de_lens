@@ -13,18 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
 class Profil
 {
     /**
-     * @var int
      *
-     * @ORM\Column(name="idProfil", type="integer", nullable=false)
+     * @ORM\Column(name="idprofil", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $idprofil;
 
     /**
-     * @var string|null
      *
-     * @ORM\Column(name="nomProfil", type="string", length=45, nullable=true)
+     * @ORM\Column(name="nomprofil", type="string", length=45, nullable=true)
      */
     private $nomprofil;
 
@@ -43,6 +41,12 @@ class Profil
         $this->nomprofil = $nomprofil;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNomprofil();
+        // TODO: Implement __toString() method.
     }
 
 

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Typetransaction index{% endblock %}
+
+{% block body %}
+    <h1>Typetransaction index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Idtypetransaction</th>
+                <th>Nomtransaction</th>
+                <th>Datedebuttransaction</th>
+                <th>Datefintransaction</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for typetransaction in typetransactions %}
+            <tr>
+                <td>{{ typetransaction.idtypetransaction }}</td>
+                <td>{{ typetransaction.nomtransaction }}</td>
+                <td>{{ typetransaction.datedebuttransaction ? typetransaction.datedebuttransaction|date('Y-m-d') : '' }}</td>
+                <td>{{ typetransaction.datefintransaction ? typetransaction.datefintransaction|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('typetransaction_show', {'idtypetransaction': typetransaction.idtypetransaction}) }}">show</a>
+                    <a href="{{ path('typetransaction_edit', {'idtypetransaction': typetransaction.idtypetransaction}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('typetransaction_new') }}">Create new</a>
+{% endblock %}

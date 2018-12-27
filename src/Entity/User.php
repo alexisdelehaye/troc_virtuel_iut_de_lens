@@ -15,7 +15,7 @@ class User
     /**
      * @var int
      *
-     * @ORM\Column(name="idUser", type="integer", nullable=false)
+     * @ORM\Column(name="iduser", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -160,6 +160,12 @@ class User
         $this->idprofil = $idprofil;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNomuser().' '.$this->getPrenompersonne();
+        // TODO: Implement __toString() method.
     }
 
 

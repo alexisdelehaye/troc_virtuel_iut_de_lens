@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Objet index{% endblock %}
+
+{% block body %}
+    <h1>Objet index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Idobjet</th>
+                <th>Nomobjet</th>
+                <th>Descriptionobjet</th>
+                <th>Disponible</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for objet in objets %}
+            <tr>
+                <td>{{ objet.idobjet }}</td>
+                <td>{{ objet.nomobjet }}</td>
+                <td>{{ objet.descriptionobjet }}</td>
+                <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}">show</a>
+                    <a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('objet_new') }}">Create new</a>
+{% endblock %}
