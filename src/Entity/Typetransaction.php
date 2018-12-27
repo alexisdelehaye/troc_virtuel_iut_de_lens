@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="typetransaction")
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\TypeTransactionRepository")
  */
 class Typetransaction
 {

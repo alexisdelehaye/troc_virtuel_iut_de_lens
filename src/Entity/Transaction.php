@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="transaction", indexes={@ORM\Index(name="idTypeTransaction_idx", columns={"idTypeTranasaction"}), @ORM\Index(name="idUserDemandeur_idx", columns={"idUserDemandeur"}), @ORM\Index(name="idUserOffrant_idx", columns={"idUserOffrant"}), @ORM\Index(name="idObjet_idx", columns={"idObjet"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
 class Transaction
 {
@@ -26,7 +27,7 @@ class Transaction
      *
      * @ORM\Column(name="transactionRealisÃ©e", type="boolean", nullable=true)
      */
-    private $transactionrealisã©e;
+    private $transactionrealisï¿½e;
 
     /**
      * @var \Objet
@@ -73,14 +74,14 @@ class Transaction
         return $this->idtransaction;
     }
 
-    public function getTransactionrealisã©e(): ?bool
+    public function getTransactionrealisï¿½e(): ?bool
     {
-        return $this->transactionrealisã©e;
+        return $this->transactionrealisï¿½e;
     }
 
-    public function setTransactionrealisã©e(?bool $transactionrealisã©e): self
+    public function setTransactionrealisï¿½e(?bool $transactionrealisï¿½e): self
     {
-        $this->transactionrealisã©e = $transactionrealisã©e;
+        $this->transactionrealisï¿½e = $transactionrealisï¿½e;
 
         return $this;
     }
