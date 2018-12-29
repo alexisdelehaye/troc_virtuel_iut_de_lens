@@ -18,7 +18,7 @@
         {% for photo in photos %}
             <tr>
                 <td>{{ photo.idphoto }}</td>
-                <td>{{ photo.cheminphoto }}</td>
+                <td><img  src="{{ base_url }}{{photo.cheminphoto }}" /></td>
                 <td>{{ photo.imageprincipale ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('photo_show', {'idphoto': photo.idphoto}) }}">show</a>
@@ -33,5 +33,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('photo_new') }}">Create new</a>
 {% endblock %}

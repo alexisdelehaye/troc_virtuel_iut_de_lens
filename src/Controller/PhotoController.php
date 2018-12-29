@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Objet;
 use App\Entity\Photo;
 use App\Form\PhotoType;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,20 +29,25 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="photo_new", methods={"GET","POST"})
+     * @Route("/{id}/new", name="add_photo_to_objet", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
         $photo = new Photo();
+        $objet =  $request->query->get('id_objet');
         $form = $this->createForm(PhotoType::class, $photo);
         $form->handleRequest($request);
-
+        $directory = 'img/';
+        $photo->setObjetobjet($this->getDoctrine()->getManager()->getRepository(Objet::class)->find($objet));
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form['cheminphoto']->getData();
+            $newFileName =rand(1, 99999).'.'.$file->guessExtension();
+            $file->move($directory,$newFileName);
+            $photo->setCheminphoto($newFileName);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($photo);
             $entityManager->flush();
-
-            return $this->redirectToRoute('photo_index');
+            return $this->redirectToRoute('objet_index');
         }
 
         return $this->render('photo/new.html.twig', [

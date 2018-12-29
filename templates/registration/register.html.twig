@@ -1,0 +1,24 @@
+{# templates/registration/register.html.twig #}
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="formulaire">
+
+    <h1 class="titre glitchRegisterTitre">>_ Registration</h1>
+
+    {{ form_start(form) }}
+
+        {{ form_widget(form.nom,{'attr' :{'class':'form-control' ,'placeholder':'Nom'}}) }}
+        {{ form_widget(form.prenom,{'attr' :{'class':'form-control' ,'placeholder':'Prénom'}}) }}
+        {{ form_widget(form.email, {'attr' :{'class':'form-control' ,'placeholder':'Email'}}) }}
+        {{ form_widget(form.plainPassword.first,{'attr' :{'class':'form-control' ,'placeholder':'Mot de passe'}}) }}
+        {{ form_widget(form.plainPassword.second,{'attr' :{'class':'form-control' ,'placeholder':'Confirmez mot de passe'}}) }}
+
+        <button type="submit" class="btn">REGISTER</button>
+
+        <a class="link_login" href="{{ path('app_login') }}">Tu as déjà un compte ?</a>
+
+    {{ form_end(form) }}
+
+</div>
+
+{% endblock %}

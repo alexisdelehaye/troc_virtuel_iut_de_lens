@@ -10,4 +10,29 @@
     <a href="{{ path('objet_index') }}">back to list</a>
 
     {{ include('objet/_delete_form.html.twig') }}
+
+<h1>images de l'objet</h1>
+
+
+    <table class="table">
+        <tbody>
+        {% for photo in listePhotos %}
+        <tr>
+            <td><img  src="{{ base_url }}{{photo.cheminphoto }}" style="width:300px;height:300px;"/></td>
+        </tr>
+        <tr>
+            <th>Image principale</th>
+            <td>{{ photo.imageprincipale ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+            <td><a class="link_show" href="{{ path('add_photo_to_objet', {'id': objet, 'id_objet':objet.idobjet}) }}">Ajouter une image descriptive à l'objet</a></td>
+            <td><a href="{{ path('photo_edit', {'idphoto': photo.idphoto}) }}">edit</a></td>
+            <td>{{ include('photo/_delete_form.html.twig') }}</td>
+        </tr>
+
+        </tbody>
+        {% endfor %}
+    </table>
+
+
 {% endblock %}

@@ -2,12 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Categorie;
 use App\Entity\Objet;
+use App\Entity\Photo;
 use App\Form\ObjetType;
+use App\Form\PhotoType;
+use App\Upload\FileObjetUpload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/objet")
@@ -17,13 +22,18 @@ class ObjetController extends AbstractController
     /**
      * @Route("/", name="objet_index", methods={"GET"})
      */
-    public function index(): Response
+    public function index(TokenStorageInterface $tokenStorage): Response
     {
+        $user = $tokenStorage->getToken()->getUser();
         $objets = $this->getDoctrine()
             ->getRepository(Objet::class)
             ->findAll();
 
-        return $this->render('objet/index.html.twig', ['objets' => $objets]);
+        $categories = $this->getDoctrine()
+            ->getRepository(Categorie::class)
+            ->findAll();
+
+        return $this->render('objet/index.html.twig', ['objets' => $objets,'user' =>$user,'categories' => $categories]);
     }
 
     /**
@@ -36,6 +46,7 @@ class ObjetController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($objet);
             $entityManager->flush();
@@ -54,7 +65,10 @@ class ObjetController extends AbstractController
      */
     public function show(Objet $objet): Response
     {
-        return $this->render('objet/show.html.twig', ['objet' => $objet]);
+        $listePhotosObjet = $this->getDoctrine()
+            ->getRepository(Photo::class)
+            ->findBy(array('objetobjet'=>$objet));
+        return $this->render('objet/show.html.twig', ['objet' => $objet,'photosObjet' => $listePhotosObjet]);
     }
 
     /**
@@ -70,10 +84,13 @@ class ObjetController extends AbstractController
 
             return $this->redirectToRoute('objet_index', ['idobjet' => $objet->getIdobjet()]);
         }
-
+        $listePhotosObjet = $this->getDoctrine()
+            ->getRepository(Photo::class)
+            ->findBy(array('objetobjet'=>$objet));
         return $this->render('objet/edit.html.twig', [
             'objet' => $objet,
             'form' => $form->createView(),
+            'listePhotos' => $listePhotosObjet
         ]);
     }
 
@@ -90,4 +107,21 @@ class ObjetController extends AbstractController
 
         return $this->redirectToRoute('objet_index');
     }
+
+    /**
+     * @Route("/filterObject/{id}", name="filter_objects", methods={"GET","POST"})
+     */
+    public function FiltreObjetSelonCategorie(Request $request): Response
+    {
+        $objetsOfCategorie =$this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie'=> $request->query->get('id_categorie')]);
+
+        $categories = $this->getDoctrine()
+            ->getRepository(Categorie::class)
+            ->findAll();
+
+        return $this->render('objet/index.html.twig', ['objets' => $objetsOfCategorie,'categories' => $categories]);
+
+
+    }
+
 }
