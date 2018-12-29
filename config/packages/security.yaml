@@ -1,14 +1,16 @@
 security:
     encoders:
-        App\Entity\User:
-            algorithm: bcrypt
-            cost: 12
+          App\Entity\User:
+              algorithm: bcrypt
+              cost: 12
 
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
+       # in_memory: { memory: ~ }
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: emailuser
+                property: emailUser
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -17,11 +19,15 @@ security:
             anonymous: true
             guard:
                 authenticators:
-                    - App\Security\AppAuthenticator
+                    - App\Security\LoginFormAuthenticator
+            logout:
+                path:   app_logout
+
+
 
             # activate different ways to authenticate
 
-            http_basic: true
+            # http_basic: true
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
 
             # form_login: true

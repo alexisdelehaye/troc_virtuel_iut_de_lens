@@ -23,7 +23,15 @@
                 <th>Disponible</th>
                 <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
             </tr>
+        <tr>
+            {% for photo in photosObjet %}
+            <td><img style="width:300px;height:300px;" src="{{ base_url }}{{photo.cheminphoto }}" /></td>
+            {% endfor %}
+
+
+        </tr>
         </tbody>
+
     </table>
 
     <a href="{{ path('objet_index') }}">back to list</a>

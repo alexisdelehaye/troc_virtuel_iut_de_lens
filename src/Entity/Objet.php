@@ -150,5 +150,10 @@ class Objet
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this->getNomobjet()." appartenant à ".$this->getIdproprietaire();
+    }
+
 
 }

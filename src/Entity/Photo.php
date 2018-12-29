@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 /**
  * Photo
@@ -51,7 +52,10 @@ class Photo
         return $this->idphoto;
     }
 
-    public function getCheminphoto(): ?string
+    /**
+     * @return mixed
+     */
+    public function getCheminphoto()
     {
         return $this->cheminphoto;
     }
