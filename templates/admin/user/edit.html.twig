@@ -1,0 +1,12 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ user.pseudo }} - Editer{% endblock %}
+
+{% block body %}
+    <h1>Editer {{ user.pseudo }}</h1>
+
+    {{ include('admin/user/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">Retourner à la liste</a>
+{% endblock %}
+

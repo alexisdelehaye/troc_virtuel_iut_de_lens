@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/admin/user")
+ *
  */
 
 class UserController extends AbstractController
@@ -43,6 +44,8 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash('success', 'L\'utilisateur a été créé avec succès.');
+
             return $this->redirectToRoute('admin_user_index');
         }
 
@@ -51,46 +54,49 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-//
-//    /**
-//     * @Route("/{iduser}", name="user_show", methods={"GET"})
-//     */
-//    public function show(User $user): Response
-//    {
-//        return $this->render('user/show.html.twig', ['user' => $user]);
-//    }
-//
-//    /**
-//     * @Route("/{iduser}/edit", name="user_edit", methods={"GET","POST"})
-//     */
-//    public function edit(Request $request, User $user): Response
-//    {
-//        $form = $this->createForm(UserType::class, $user);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $this->getDoctrine()->getManager()->flush();
-//
-//            return $this->redirectToRoute('user_index', ['iduser' => $user->getIduser()]);
-//        }
-//
-//        return $this->render('user/edit.html.twig', [
-//            'user' => $user,
-//            'form' => $form->createView(),
-//        ]);
-//    }
-//
-//    /**
-//     * @Route("/{iduser}", name="user_delete", methods={"DELETE"})
-//     */
-//    public function delete(Request $request, User $user): Response
-//    {
-//        if ($this->isCsrfTokenValid('delete'.$user->getIduser(), $request->request->get('_token'))) {
-//            $entityManager = $this->getDoctrine()->getManager();
-//            $entityManager->remove($user);
-//            $entityManager->flush();
-//        }
-//
-//        return $this->redirectToRoute('user_index');
-//    }
+
+    /**
+     * @Route("/{iduser}", name="admin_user_show", methods={"GET"})
+     */
+    public function show(User $user): Response
+    {
+        return $this->render('admin/user/show.html.twig', ['user' => $user]);
+    }
+
+    /**
+     * @Route("/{iduser}/edit", name="admin_user_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, User $user): Response
+    {
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
+
+            return $this->redirectToRoute('admin_user_show', ['iduser' => $user->getIduser()]);
+        }
+
+        return $this->render('admin/user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{iduser}", name="admin_user_delete", methods={"DELETE"})
+     */
+    public function delete(Request $request, User $user): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$user->getIduser(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('admin_user_index');
+    }
 }

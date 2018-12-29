@@ -3,36 +3,41 @@
 {% block title %}Hello !{% endblock %}
 
 {% block body %}
-
-<table class="table">
-        <thead>
+    <h1>Liste des utilisateurs <a href="{{ path('admin_user_new') }}" class="btn btn-success btn-sm"> Ajouter un
+            utilisateur</a></h1>
+    <div class="table-responsive-md">
+        <table class="table">
+            <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>Pseudo</th>
                 <th>Nom</th>
                 <th>Prénom</th>
-                <th>Emailuser</th>
+                <th>Email</th>
+                <th>Roles</th>
                 <th>actions</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.pseudo }}</td>
-                <td>{{ user.iduser }}</td>
-                <td>{{ user.nomuser }}</td>
-                <td>{{ user.prenompersonne }}</td>
-                <td>{{ user.emailuser }}</td>
-                <td>
-                    <a href="{{ path('user_show', {'iduser': user.iduser}) }}">show</a>
-                    <a href="{{ path('user_edit', {'iduser': user.iduser}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.iduser }}</td>
+                    <td>{{ user.pseudo }}</td>
+                    <td>{{ user.nomuser }}</td>
+                    <td>{{ user.prenompersonne }}</td>
+                    <td>{{ user.emailuser }}</td>
+                    <td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
+                    <td>
+                        <a href="{{ path('admin_user_show', {'iduser': user.iduser}) }}" class="btn btn-secondary">Voir</a>
+                        <a href="{{ path('admin_user_edit', {'iduser': user.iduser}) }}" class="btn btn-primary">Editer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

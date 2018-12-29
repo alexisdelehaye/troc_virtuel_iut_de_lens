@@ -1,0 +1,58 @@
+{% extends 'admin/base.html.twig' %}
+
+
+{% block title %}{{ user.pseudo }} - Voir{% endblock %}
+
+{% block body %}
+    <h1>Profil de {{ user.pseudo }}</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h2>Information sur l'utilisateur</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Iduser</th>
+                        <td>{{ user.iduser }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nomuser</th>
+                        <td>{{ user.nomuser }}</td>
+                    </tr>
+                    <tr>
+                        <th>Prenompersonne</th>
+                        <td>{{ user.prenompersonne }}</td>
+                    </tr>
+                    <tr>
+                        <th>Emailuser</th>
+                        <td>{{ user.emailuser }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pseudo</th>
+                        <td>{{ user.pseudo }}</td>
+                    </tr>
+                    <tr>
+                        <th>Avatar</th>
+                        <td><img src="{{ user.avatar }}" /></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <h2>Liste des récents objets listés</h2>
+                TODO
+                {# TODO #}
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        <a href="{{ path('admin_user_edit', {'iduser': user.iduser}) }}" class="btn btn-primary">Editer</a>
+        <a href="{{ path('admin_user_edit', {'iduser': user.iduser}) }}" class="btn btn-warning">Bannir</a>
+        {{ include('admin/user/_delete_form.html.twig') }}
+    </div>
+
+{% endblock %}
+
