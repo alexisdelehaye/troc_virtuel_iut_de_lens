@@ -1,0 +1,38 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Liste des catégories{% endblock %}
+
+{% block body %}
+    <h1>Liste des catégories <a href="{{ path('admin_categorie_new') }}" class="btn btn-success btn-sm"> Ajouter une
+            catégorie</a></h1>
+    <div class="table-responsive-md">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for categorie in categories %}
+                <tr>
+                    <td>{{ categorie.idcategorie }}</td>
+                    <td>{{ categorie.nomcategorie }}</td>
+                    <td>{{ categorie.descriptioncategorie }}</td>
+                    <td>
+                        <a href="{{ path('admin_categorie_show', {'idcategorie': categorie.idcategorie}) }}"
+                           class="btn btn-secondary">Voir</a>
+                        <a href="{{ path('admin_categorie_edit', {'idcategorie': categorie.idcategorie}) }}"
+                           class="btn btn-primary">Editer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

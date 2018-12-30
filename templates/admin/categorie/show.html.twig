@@ -1,0 +1,44 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ categorie.nomcategorie }} - Voir{% endblock %}
+
+{% block body %}
+    <h1>Catégorie {{ categorie.nomcategorie }}</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h2>Information sur la catégorie</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ categorie.idcategorie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ categorie.nomcategorie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ categorie.descriptioncategorie }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <h2>Liste des récents objets listés / </h2>
+                TODO
+                {# TODO #}
+                <h2>Statistiques </h2>
+                TODO
+                {# TODO #}
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a href="{{ path('admin_categorie_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        <a href="{{ path('admin_categorie_edit', {'idcategorie': categorie.idcategorie}) }}" class="btn btn-primary">Editer</a>
+        {{ include('admin/categorie/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

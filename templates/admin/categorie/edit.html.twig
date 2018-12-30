@@ -1,0 +1,11 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ categorie.nomcategorie }} - Editer{% endblock %}
+
+{% block body %}
+    <h1>Editer la categorie {{ categorie.nomcategorie }}</h1>
+
+    {{ include('admin/categorie/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('admin_categorie_index') }}" class="btn btn-secondary">Retourner à la liste</a>
+{% endblock %}

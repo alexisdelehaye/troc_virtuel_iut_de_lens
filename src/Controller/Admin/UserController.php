@@ -9,16 +9,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/admin/user")
- *
+ * @Route("/admin/user", name="admin_user_")*
+ * @IsGranted("ROLE_ADMIN")
  */
 
 class UserController extends AbstractController
 {
     /**
-     * @Route("/", name="admin_user_index", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
     public function index(): Response
     {
@@ -29,7 +30,7 @@ class UserController extends AbstractController
         return $this->render('admin/user/index.html.twig', ['users' => $users]);
     }
     /**
-     * @Route("/new", name="admin_user_new", methods={"GET","POST"})
+     * @Route("/new", name="new", methods={"GET","POST"})
      */
     public function new(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
@@ -56,7 +57,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{iduser}", name="admin_user_show", methods={"GET"})
+     * @Route("/{iduser}", name="show", methods={"GET"})
      */
     public function show(User $user): Response
     {
@@ -64,7 +65,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{iduser}/edit", name="admin_user_edit", methods={"GET","POST"})
+     * @Route("/{iduser}/edit", name="edit", methods={"GET","POST"})
      */
     public function edit(Request $request, User $user): Response
     {
@@ -87,7 +88,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{iduser}", name="admin_user_delete", methods={"DELETE"})
+     * @Route("/{iduser}", name="delete", methods={"DELETE"})
      */
     public function delete(Request $request, User $user): Response
     {
@@ -95,6 +96,9 @@ class UserController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($user);
             $entityManager->flush();
+            $this->addFlash('success', 'L\'utilisateur a été supprimé avec succès.');
+        }else{
+            $this->addFlash('error', 'Erreur lors de la suppression de l\'utilisateur.');
         }
 
         return $this->redirectToRoute('admin_user_index');
