@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Conversation;
+use App\Entity\Message;
+use App\Entity\Objet;
 use App\Form\ConversationType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/conversation")
@@ -32,10 +35,12 @@ class ConversationController extends AbstractController
     public function new(Request $request): Response
     {
         $conversation = new Conversation();
+        $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->findOneBy(['idobjet' => $request->query->get('id_objet')]);
         $form = $this->createForm(ConversationType::class, $conversation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $conversation->setIdobjetconcerne($objet);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($conversation);
             $entityManager->flush();
@@ -54,7 +59,8 @@ class ConversationController extends AbstractController
      */
     public function show(Conversation $conversation): Response
     {
-        return $this->render('conversation/show.html.twig', ['conversation' => $conversation]);
+        $listeMessage = $this->getDoctrine()->getManager()->getRepository(Message::class)->findBy(['conversationconversation' => $conversation]);
+        return $this->render('conversation/show.html.twig', ['conversation' => $conversation,'messages' => $listeMessage]);
     }
 
     /**

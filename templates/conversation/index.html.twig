@@ -11,6 +11,7 @@
                 <th>Idconversation</th>
                 <th>Contenu</th>
                 <th>Date</th>
+                <th>Correspondant</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,9 +21,9 @@
                 <td>{{ conversation.idconversation }}</td>
                 <td>{{ conversation.contenu }}</td>
                 <td>{{ conversation.date }}</td>
+                <td> {{ conversation.idenvoyeur }}</td>
                 <td>
                     <a href="{{ path('conversation_show', {'idconversation': conversation.idconversation}) }}">show</a>
-                    <a href="{{ path('conversation_edit', {'idconversation': conversation.idconversation}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

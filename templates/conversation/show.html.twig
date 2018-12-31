@@ -7,24 +7,52 @@
 
     <table class="table">
         <tbody>
+        <tr>
+            <th>Idconversation</th>
+            <td>{{ conversation.idconversation }}</td>
+        </tr>
+        <tr>
+            <th>Contenu</th>
+            <td>{{ conversation.contenu }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ conversation.date }}</td>
+        </tr>
+        <tr>
+            <th>Correspondant de la conversation</th>
+            <td> {{ conversation.idenvoyeur }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>message de : </th>
+            <th>Contenu</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for message in messages %}
             <tr>
-                <th>Idconversation</th>
-                <td>{{ conversation.idconversation }}</td>
+                <td>{{ message.useruser }}</td>
+                <td>{{ message.contenu }}</td>
             </tr>
+        {% else %}
             <tr>
-                <th>Contenu</th>
-                <td>{{ conversation.contenu }}</td>
+                <td colspan="3">no records found</td>
             </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ conversation.date }}</td>
-            </tr>
+        {% endfor %}
         </tbody>
     </table>
 
     <a href="{{ path('conversation_index') }}">back to list</a>
 
-    <a href="{{ path('conversation_edit', {'idconversation': conversation.idconversation}) }}">edit</a>
+    <a href="{{ path('message_new', {'id_conversation': conversation.idconversation}) }}">Répondre à la conversation </a>
+
+    <a href="{{ path('transaction_new', {'id_objet': conversation.idobjetconcerne,'user_demandeur' : conversation.idenvoyeur.iduser, 'user_offrant' :  conversation.idobjetconcerne.idproprietaire.iduser}) }}">Offrir l'objet à {{ conversation.idenvoyeur }} de la part de {{ conversation.idobjetconcerne.idproprietaire  }}</a>
 
     {{ include('conversation/_delete_form.html.twig') }}
 {% endblock %}

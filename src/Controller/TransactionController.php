@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Objet;
 use App\Entity\Transaction;
+use App\Entity\User;
 use App\Form\TransactionType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,15 +34,28 @@ class TransactionController extends AbstractController
     public function new(Request $request): Response
     {
         $transaction = new Transaction();
+        $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->findOneBy(['idobjet' => $request->query->get('id_objet')]);
+        $user_demandeur = $this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(['iduser' => $request->query->get('user_demandeur')]);
+        $user_offrant = $request->query->get('user_offrant');
         $form = $this->createForm(TransactionType::class, $transaction);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $transaction->setIdobjet($objet);
+            $transaction->setIduserdemandeur($user_demandeur);
+            $transaction->setIduseroffrant($this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(['iduser' => $user_offrant]));
+            $transaction->setTransactionrealisee(true);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($transaction);
             $entityManager->flush();
 
-            return $this->redirectToRoute('transaction_index');
+            $objet->setIdtransaction($this->getDoctrine()->getManager()->getRepository(Transaction::class)->find($transaction));
+            $objet->setIdproprietaire($user_demandeur);
+            $objet->setDisponible(false);
+            $entityManager->persist($objet);
+            $entityManager->flush();
+            return $this->redirectToRoute('objet_index');
         }
 
         return $this->render('transaction/new.html.twig', [

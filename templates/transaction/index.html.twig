@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th>Idtransaction</th>
-                <th>Transactionrealisã©e</th>
+                <th>Transactionrealisee</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -17,7 +17,7 @@
         {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction.idtransaction }}</td>
-                <td>{{ transaction.transactionrealisã©e ? 'Yes' : 'No' }}</td>
+                <td>{{ transaction.transactionrealisee ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('transaction_show', {'idtransaction': transaction.idtransaction}) }}">show</a>
                     <a href="{{ path('transaction_edit', {'idtransaction': transaction.idtransaction}) }}">edit</a>

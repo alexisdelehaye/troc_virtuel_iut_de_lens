@@ -5,9 +5,9 @@ namespace App\Controller;
 use App\Entity\Categorie;
 use App\Entity\Objet;
 use App\Entity\Photo;
+use App\Entity\Transaction;
 use App\Form\ObjetType;
 use App\Form\PhotoType;
-use App\Upload\FileObjetUpload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,13 +27,17 @@ class ObjetController extends AbstractController
         $user = $tokenStorage->getToken()->getUser();
         $objets = $this->getDoctrine()
             ->getRepository(Objet::class)
-            ->findAll();
+            ->findBy(['disponible' => true]);
 
         $categories = $this->getDoctrine()
             ->getRepository(Categorie::class)
             ->findAll();
 
-        return $this->render('objet/index.html.twig', ['objets' => $objets,'user' =>$user,'categories' => $categories]);
+        $photos =  $this->getDoctrine()
+            ->getRepository(Photo::class)
+            ->findBy(['imageprincipale'=>true]);
+
+        return $this->render('objet/index.html.twig', ['objets' => $objets,'user' =>$user,'categories' => $categories,'photos' =>$photos]);
     }
 
     /**
@@ -70,6 +74,8 @@ class ObjetController extends AbstractController
             ->findBy(array('objetobjet'=>$objet));
         return $this->render('objet/show.html.twig', ['objet' => $objet,'photosObjet' => $listePhotosObjet]);
     }
+
+
 
     /**
      * @Route("/{idobjet}/edit", name="objet_edit", methods={"GET","POST"})
@@ -123,5 +129,27 @@ class ObjetController extends AbstractController
 
 
     }
+
+
+
+    /**
+     * @Route("/showObjectOfUsers", name="showObject_OfUsers", methods={"GET"})
+     */
+    public function showUsersObject(TokenStorageInterface $tokenStorage): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
+
+    {
+
+      //  <br/><a href="{{ path('showObject_OfUsers')}}">liste de vos objets présents sur le site</a>
+        $user = $tokenStorage->getToken()->getUser();
+        echo $user;
+        /*
+        $listeObjets = $this->getDoctrine()
+            ->getRepository('App\Entity\Objet')
+            ->findBy(['idproprietaire' => $user->getIduser()]);
+
+       // return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets,'user' =>$user]);
+        */
+    }
+
 
 }

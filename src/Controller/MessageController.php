@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Form\MessageType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,11 +32,13 @@ class MessageController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $conversation =  $this->getDoctrine()->getManager()->getRepository(Conversation::class)->find($request->query->get('id_conversation'));
         $message = new Message();
         $form = $this->createForm(MessageType::class, $message);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $message->setConversationconversation($conversation);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($message);
             $entityManager->flush();

@@ -27,7 +27,7 @@ class Transaction
      *
      * @ORM\Column(name="transactionRealisée", type="boolean", nullable=true)
      */
-    private $transactionrealis�e;
+    private $transactionrealisee;
 
     /**
      * @var \Objet
@@ -74,14 +74,14 @@ class Transaction
         return $this->idtransaction;
     }
 
-    public function getTransactionrealis�e(): ?bool
+    public function getTransactionrealisee(): ?bool
     {
-        return $this->transactionrealis�e;
+        return $this->transactionrealisee;
     }
 
-    public function setTransactionrealis�e(?bool $transactionrealis�e): self
+    public function setTransactionrealisee(?bool $transactionrealisee): self
     {
-        $this->transactionrealis�e = $transactionrealis�e;
+        $this->transactionrealisee = $transactionrealisee;
 
         return $this;
     }
