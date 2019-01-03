@@ -40,4 +40,36 @@
     <a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">edit</a>
 
     {{ include('objet/_delete_form.html.twig') }}
+
+    {%  if DemandesObjet is not null %}
+        <br/> voici toutes les demandes par rapport à cette objet :
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Idconversation</th>
+            <th>Contenu</th>
+            <th>Date</th>
+            <th>Correspondant</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for conversation in DemandesObjet %}
+            <tr>
+                <td>{{ conversation.idconversation }}</td>
+                <td>{{ conversation.contenu }}</td>
+                <td>{{ conversation.date }}</td>
+                <td> {{ conversation.idenvoyeur }}</td>
+                <td>
+                    <a href="{{ path('conversation_show', {'idconversation': conversation.idconversation}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 {% endblock %}

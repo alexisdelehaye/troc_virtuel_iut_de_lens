@@ -6,7 +6,10 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+    <div class="container">
+        {{ render(controller('App\\Controller\\SearchController::searchBar')) }}
         {% block body %}{% endblock %}
+    </div>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

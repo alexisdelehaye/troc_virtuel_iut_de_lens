@@ -47,4 +47,14 @@ class ObjetRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+
+    public function searchObjetByName($name) : array {
+        $qb = $this->createQueryBuilder('o')->where('o.nomobjet LIKE :val')->setParameter('val',$name)->getQuery();
+
+        return $qb->execute();
+    }
+
+
 }

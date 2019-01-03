@@ -47,4 +47,10 @@ class PhotoRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getMainPictureOfObjectById($id){
+        $qb = $this->createQueryBuilder('p')->where('p.objetobjet = :id')
+            ->andWhere('p.imageprincipale = 1')->setParameter('id',$id)->getQuery();
+        return $qb->execute();
+    }
 }

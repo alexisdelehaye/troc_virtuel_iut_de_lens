@@ -4,23 +4,24 @@
 
 {% block body %}
     <h1>Liste des objets présents sur notre site</h1>
+    <h2> Résultat de la recherche sur : {{ recherche }}</h2>
     <br/><a href="{{ path('objet_showUsersObject')}}">liste de vos objets présents sur le site</a>
     {% for categorie in categories %}
         <tr>
             <td><a href="{{ path('filter_objects', {'id': categorie,'id_categorie': categorie.idcategorie}) }}">{{ categorie.nomcategorie }}</a></td>
         </tr>
+    {% endfor %}
 
-{% endfor %}
-
+{% if objets|length > 0 %}
     <table class="table">
         <thead>
-            <tr>
-                <th>Nom de l'objet</th>
-                <th>Propriétaire de l'objet</th>
-                <th>Présentation de l'objet</th>
-                <th>Est-il encore disponible ?</th>
-                <th> Image principale de l'objet</th>
-            </tr>
+        <tr>
+            <th>Nom de l'objet</th>
+            <th>Propriétaire de l'objet</th>
+            <th>Présentation de l'objet</th>
+            <th>Est-il encore disponible ?</th>
+            <th> Image principale de l'objet</th>
+        </tr>
         </thead>
         <tbody>
         {% for objet in objets %}
@@ -30,11 +31,11 @@
                 <td>{{ objet.nomobjet }}</td>
                 <td>{{ objet.descriptionobjet }}</td>
                 <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
-            {% for photo in photos %}
-                {% if objet == photo.objetobjet %}
-                <td><img style="width:50px;height: 50px;" src="{{ base_url }}{{photo.cheminphoto }}"/></td>
-                {% endif %}
-            {% endfor %}
+                {% for photo in photos %}
+                    {% if objet == photo[0].objetobjet %}
+                        <td><img style="width:50px;height: 50px;" src="{{ base_url }}{{photo[0].cheminphoto }}"/></td>
+                    {% endif %}
+                {% endfor %}
                 <td><a class="link_show" href="{{ path('add_photo_to_objet', {'id': objet, 'id_objet':objet.idobjet}) }}">Ajouter une image descriptive à l'objet</a></td>
                 <td><a href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}">show</a></td>
                 <td><a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">edit</a></td>
@@ -50,4 +51,10 @@
     </table>
 
     <a href="{{ path('objet_new') }}">Create new</a>
+
+
+{% else %}
+    <h3>Désolée, nous n'avons trouvé aucun objet par rapport à votre recherche...</h3>
+{% endif %}
 {% endblock %}
+
