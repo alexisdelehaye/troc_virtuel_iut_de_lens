@@ -88,6 +88,22 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/{iduser}/ban", name="ban", methods={"POST"})
+     */
+    public function ban(Request $request, User $user): Response
+    {
+        if ($this->isCsrfTokenValid('ban'.$user->getIduser(), $request->request->get('_token'))) {
+            $user->setBanni(!$user->isBanni()).
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'L\'utilisateur a été banni.');
+        }else{
+            $this->addFlash('error', 'Erreur lors du bannisement de l\'utilisateur.');
+        }
+
+        return $this->redirectToRoute('admin_user_show', ['iduser' => $user->getIduser()]);
+    }
+
+    /**
      * @Route("/{iduser}", name="delete", methods={"DELETE"})
      */
     public function delete(Request $request, User $user): Response

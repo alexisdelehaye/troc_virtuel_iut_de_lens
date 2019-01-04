@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('admin_user_ban', {'iduser': user.iduser}) }}" onsubmit="return confirm('Voulez vous vraiment {{ user.isBanni ? 'Dé-bannir' : 'Bannir' }} l\'utilisateur  ?');">
+    <input type="hidden" name="_method" value="POST">
+    <input type="hidden" name="_token" value="{{ csrf_token('ban' ~ user.iduser) }}">
+    <button class="btn btn-warning">{{ user.isBanni ? 'Dé-bannir' : 'Bannir' }}</button>
+</form>
+

@@ -33,6 +33,10 @@
                         <td>{{ user.pseudo }}</td>
                     </tr>
                     <tr>
+                        <th>profil</th>
+                        <td>{{ user.idprofil }}</td>
+                    </tr>
+                    <tr>
                         <th>Avatar</th>
                         <td><img src="{{ user.avatar }}" /></td>
                     </tr>
@@ -50,7 +54,7 @@
     <div class="btn-group" role="group" aria-label="Basic example">
         <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">Retour à la liste</a>
         <a href="{{ path('admin_user_edit', {'iduser': user.iduser}) }}" class="btn btn-primary">Editer</a>
-        <a href="{{ path('admin_user_edit', {'iduser': user.iduser}) }}" class="btn btn-warning">Bannir</a>
+        {{ include('admin/user/_ban_form.html.twig') }}
         {{ include('admin/user/_delete_form.html.twig') }}
     </div>
 

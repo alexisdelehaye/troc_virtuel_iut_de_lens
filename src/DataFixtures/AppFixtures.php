@@ -40,6 +40,7 @@ class AppFixtures extends Fixture
             ->setPrenompersonne("Chris")
             ->setEmailuser("admin@admin.fr")
             ->setPseudo("CS")
+            ->setRoles(['ROLE_ADMIN'])
             ->setPassworduser($this->encoder->encodePassword($user2, "secret"));
         $manager->persist($user2);
 
