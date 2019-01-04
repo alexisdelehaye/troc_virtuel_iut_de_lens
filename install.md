@@ -36,3 +36,8 @@ php bin/console doctrine:fixtures:load
 ```
 php bin/console server:run
 ```
+
+####compte de test
+user: user@user.fr - secret
+
+admin: admin@admin.fr - secret
