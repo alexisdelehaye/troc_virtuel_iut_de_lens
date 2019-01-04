@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/message")
@@ -30,26 +31,33 @@ class MessageController extends AbstractController
     /**
      * @Route("/new", name="message_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, TokenStorageInterface $tokenStorage): Response
     {
-        $conversation =  $this->getDoctrine()->getManager()->getRepository(Conversation::class)->find($request->query->get('id_conversation'));
-        $message = new Message();
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $message->setConversationconversation($conversation);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($message);
-            $entityManager->flush();
+        $user = $tokenStorage->getToken()->getUser();
 
-            return $this->redirectToRoute('message_index');
+        if ($user !== 'anon.') {
+            $conversation = $this->getDoctrine()->getManager()->getRepository(Conversation::class)->find($request->query->get('id_conversation'));
+            $message = new Message();
+            $form = $this->createForm(MessageType::class, $message);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $message->setConversationconversation($conversation);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($message);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('conversation_show', ['idconversation' => $conversation->getIdconversation()]);
+            }
+
+            return $this->render('message/new.html.twig', [
+                'message' => $message,
+                'form' => $form->createView(),
+            ]);
         }
 
-        return $this->render('message/new.html.twig', [
-            'message' => $message,
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('objet_index');
     }
 
     /**
@@ -60,37 +68,51 @@ class MessageController extends AbstractController
         return $this->render('message/show.html.twig', ['message' => $message]);
     }
 
+
     /**
      * @Route("/{idmessage}/edit", name="message_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Message $message): Response
+    public function edit(Request $request, Message $message, TokenStorageInterface $tokenStorage): Response
     {
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
+        $user = $tokenStorage->getToken()->getUser();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        if ($user !== 'anon.' && ($message->getUseruser() == $user)) {
 
-            return $this->redirectToRoute('message_index', ['idmessage' => $message->getIdmessage()]);
+            $form = $this->createForm(MessageType::class, $message);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
+
+                return $this->redirectToRoute('conversation_show', ['idconversation' => $message->getConversationconversation()->getIdconversation()]);
+            }
+
+            return $this->render('message/edit.html.twig', [
+                'message' => $message,
+                'form' => $form->createView(),
+            ]);
         }
-
-        return $this->render('message/edit.html.twig', [
-            'message' => $message,
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('objet_index');
     }
 
     /**
      * @Route("/{idmessage}", name="message_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Message $message): Response
+    public function delete(Request $request, Message $message, TokenStorageInterface $tokenStorage): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$message->getIdmessage(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($message);
-            $entityManager->flush();
-        }
+        $user = $tokenStorage->getToken()->getUser();
 
-        return $this->redirectToRoute('message_index');
+        if ($user !== 'anon.' && ($message->getUseruser() == $user)) {
+
+            if ($this->isCsrfTokenValid('delete' . $message->getIdmessage(), $request->request->get('_token'))) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($message);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('conversation_show', ['idconversation' => $message->getConversationconversation()->getIdconversation()]);
+        }
+        return $this->redirectToRoute('objet_index');
     }
+
 }

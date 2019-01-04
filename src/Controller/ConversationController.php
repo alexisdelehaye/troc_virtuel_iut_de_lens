@@ -32,35 +32,47 @@ class ConversationController extends AbstractController
     /**
      * @Route("/new", name="conversation_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, TokenStorageInterface $tokenStorage): Response
     {
-        $conversation = new Conversation();
-        $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->findOneBy(['idobjet' => $request->query->get('id_objet')]);
-        $form = $this->createForm(ConversationType::class, $conversation);
-        $form->handleRequest($request);
+        $user = $tokenStorage->getToken()->getUser();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $conversation->setIdobjetconcerne($objet);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($conversation);
-            $entityManager->flush();
+        if ($user !== 'anon.') {
+            $conversation = new Conversation();
+            $objet = $this->getDoctrine()->getManager()->getRepository(Objet::class)->findOneBy(['idobjet' => $request->query->get('id_objet')]);
+            $form = $this->createForm(ConversationType::class, $conversation);
+            $form->handleRequest($request);
 
-            return $this->redirectToRoute('conversation_index');
+            if ($form->isSubmitted() && $form->isValid()) {
+                $conversation->setIdobjetconcerne($objet);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($conversation);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('conversation_index');
+            }
+
+            return $this->render('conversation/new.html.twig', [
+                'conversation' => $conversation,
+                'form' => $form->createView(),
+            ]);
+
         }
-
-        return $this->render('conversation/new.html.twig', [
-            'conversation' => $conversation,
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('objet_index');
     }
 
     /**
      * @Route("/{idconversation}", name="conversation_show", methods={"GET"})
      */
-    public function show(Conversation $conversation): Response
+    public function show(Conversation $conversation, TokenStorageInterface $tokenStorage): Response
     {
-        $listeMessage = $this->getDoctrine()->getManager()->getRepository(Message::class)->findBy(['conversationconversation' => $conversation]);
-        return $this->render('conversation/show.html.twig', ['conversation' => $conversation,'messages' => $listeMessage]);
+        $user = $tokenStorage->getToken()->getUser();
+
+        if ($user !== 'anon.' && ($user == $conversation->getIdobjetconcerne()->getIdproprietaire() || $user == $conversation->getIdenvoyeur())) {
+            $listeMessage = $this->getDoctrine()->getManager()->getRepository(Message::class)->findBy(['conversationconversation' => $conversation]);
+            return $this->render('conversation/show.html.twig', ['conversation' => $conversation, 'messages' => $listeMessage]);
+        }
+
+        return $this->redirectToRoute('objet_index');
     }
 
     /**

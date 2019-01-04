@@ -25,7 +25,6 @@ class ObjetController extends AbstractController
      */
     public function index(TokenStorageInterface $tokenStorage): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
         $objets = $this->getDoctrine()
             ->getRepository(Objet::class)
             ->findBy(['disponible' => true]);
@@ -38,7 +37,7 @@ class ObjetController extends AbstractController
             ->getRepository(Photo::class)
             ->findBy(['imageprincipale'=>true]);
 
-        return $this->render('objet/index.html.twig', ['objets' => $objets,'user' =>$user,'categories' => $categories,'photos' =>$photos]);
+        return $this->render('objet/index.html.twig', ['objets' => $objets,'categories' => $categories,'photos' =>$photos]);
     }
 
     /**
