@@ -1,0 +1,65 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Liste des objets{% endblock %}
+
+{% block body %}
+    <h1>Liste des objets</h1>
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="form-row">
+            <div class="col">
+                {{ form_row(form.users) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.categories) }}
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" type="submit">Rechercher</button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+    <div class="table-responsive-md">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Categorie</th>
+                <th>Disponible ?</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for objet in objets %}
+                <tr>
+                    <td>{{ objet.idobjet }}</td>
+                    <td>{{ objet.nomobjet }}</td>
+                    <td>{{ objet.idcategorie }}</td>
+                    <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
+                    <td>
+                        <a href="{{ path('admin_objet_show', {'idobjet': objet.idobjet}) }}"
+                           class="btn btn-secondary">Voir</a>
+                        <a href="{{ path('admin_objet_edit', {'idobjet': objet.idobjet}) }}"
+                           class="btn btn-primary">Editer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script>
+        $('select').select2();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
