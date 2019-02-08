@@ -16,17 +16,32 @@
             </thead>
             <tbody>
             {% for categorie in categories %}
-                <tr>
+                <tr class="table-info">
                     <td>{{ categorie.idcategorie }}</td>
                     <td>{{ categorie.nomcategorie }}</td>
                     <td>{{ categorie.descriptioncategorie }}</td>
                     <td>
+                        <a href="{{ path('admin_categorie_new', {'idcategorie': categorie.idcategorie}) }}"
+                           class="btn btn-success">Ajouter</a>
                         <a href="{{ path('admin_categorie_show', {'idcategorie': categorie.idcategorie}) }}"
                            class="btn btn-secondary">Voir</a>
                         <a href="{{ path('admin_categorie_edit', {'idcategorie': categorie.idcategorie}) }}"
                            class="btn btn-primary">Editer</a>
                     </td>
                 </tr>
+                {% for subcategorie in categorie.categories %}
+                    <tr>
+                        <td>{{ subcategorie.idcategorie }}</td>
+                        <td>{{ subcategorie.nomcategorie }}</td>
+                        <td>{{ subcategorie.descriptioncategorie }}</td>
+                        <td>
+                            <a href="{{ path('admin_categorie_show', {'idcategorie': subcategorie.idcategorie}) }}"
+                               class="btn btn-secondary">Voir</a>
+                            <a href="{{ path('admin_categorie_edit', {'idcategorie': subcategorie.idcategorie}) }}"
+                               class="btn btn-primary">Editer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
             {% else %}
                 <tr>
                     <td colspan="4">no records found</td>

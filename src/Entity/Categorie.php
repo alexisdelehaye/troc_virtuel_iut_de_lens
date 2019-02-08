@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +37,22 @@ class Categorie
      * @ORM\Column(name="descriptionCategorie", type="text", length=65535, nullable=true)
      */
     private $descriptioncategorie;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Categorie", inversedBy="categories")
+     * @ORM\JoinColumn(name="id", referencedColumnName="idcategorie")
+     */
+    private $categoriePere;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Categorie", mappedBy="categoriePere")
+     */
+    private $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     public function getIdcategorie(): ?int
     {
@@ -71,5 +89,46 @@ class Categorie
         // TODO: Implement __toString() method.
     }
 
+    public function getCategoriePere(): ?self
+    {
+        return $this->categoriePere;
+    }
 
+    public function setCategoriePere(?self $categoriePere): self
+    {
+        $this->categoriePere = $categoriePere;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(self $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setCategoriePere($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(self $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            // set the owning side to null (unless already changed)
+            if ($category->getCategoriePere() === $this) {
+                $category->setCategoriePere(null);
+            }
+        }
+
+        return $this;
+    }
 }
