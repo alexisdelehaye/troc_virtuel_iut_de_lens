@@ -86,7 +86,6 @@ class Categorie
     public function __toString()
     {
         return $this->nomcategorie;
-        // TODO: Implement __toString() method.
     }
 
     public function getCategoriePere(): ?self

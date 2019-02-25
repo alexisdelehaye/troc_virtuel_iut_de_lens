@@ -178,7 +178,6 @@ class User implements UserInterface
     public function __toString()
     {
         return $this->getNomuser().' '.$this->getPrenompersonne();
-        // TODO: Implement __toString() method.
     }
 
 
@@ -215,7 +214,6 @@ class User implements UserInterface
     public function getPassword()
     {
         return (string) $this->passworduser;
-        // TODO: Implement getPassword() method.
     }
 
     /**
@@ -227,7 +225,6 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
     }
 
     /**
@@ -248,7 +245,6 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
     }
 
 

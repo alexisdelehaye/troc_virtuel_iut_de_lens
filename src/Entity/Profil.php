@@ -47,7 +47,6 @@ class Profil
     public function __toString()
     {
         return $this->getNomprofil();
-        // TODO: Implement __toString() method.
     }
 
 
