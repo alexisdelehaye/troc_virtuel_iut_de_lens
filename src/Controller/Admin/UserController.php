@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\Admin\UserType;
+use App\Security\AppAccess;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,6 +93,7 @@ class UserController extends AbstractController
      */
     public function ban(Request $request, User $user): Response
     {
+        $this->denyAccessUnlessGranted(AppAccess::ADMIN_USER_BAN, $user);
         if ($this->isCsrfTokenValid('ban'.$user->getIduser(), $request->request->get('_token'))) {
             $user->setBanni(!$user->isBanni()).
             $this->getDoctrine()->getManager()->flush();

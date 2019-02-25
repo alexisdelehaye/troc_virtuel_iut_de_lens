@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Categorie;
 use App\Form\Admin\CategorieType;
+use App\Repository\CategorieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,22 +20,21 @@ class CategorieController extends AbstractController
     /**
      * @Route("/", name="index", methods={"GET"})
      */
-    public function index(): Response
+    public function index(CategorieRepository $categorieRepository): Response
     {
-        $categories = $this->getDoctrine()
-            ->getRepository(Categorie::class)
-            ->findAll();
+        $categories = $categorieRepository->findAllParentCategory();
 
         return $this->render('admin/categorie/index.html.twig', ['categories' => $categories]);
     }
 
     /**
-     * @Route("/new", name="new", methods={"GET","POST"})
+     * @Route("/new/{idcategorie}", name="new", methods={"GET","POST"},defaults={"idcategorie" = null})
      */
-    public function new(Request $request): Response
+    public function new(Request $request,Categorie $categorieParent = null): Response
     {
         $categorie = new Categorie();
-        $form = $this->createForm(CategorieType::class, $categorie);
+
+        $form = $this->createForm(CategorieType::class, $categorie, ['categorieParent' => $categorieParent]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

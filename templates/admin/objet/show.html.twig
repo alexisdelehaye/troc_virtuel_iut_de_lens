@@ -1,0 +1,59 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ objet.nomobjet }} - Voir{% endblock %}
+
+{% block body %}
+    <h1>Objet {{ objet.nomobjet }}</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h2>Information sur l'objet</h2>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ objet.idobjet }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ objet.nomobjet }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ objet.descriptionobjet }}</td>
+                    </tr>
+                    <tr>
+                        <th>Categorie</th>
+                        <td>{{ objet.idcategorie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <td>{{ objet.idproprietaire }}</td>
+                    </tr>
+                    <tr>
+                        <th>Disponible ?</th>
+                        <td>{{ objet.disponible ? 'oui' : 'non' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <h2>Liste des photos / </h2>
+                TODO
+                {# TODO #}
+                <h2>transaction </h2>
+                TODO
+                {# TODO #}
+                <h2>Conversations </h2>
+                TODO
+                {# TODO #}
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a href="{{ path('admin_objet_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        <a href="{{ path('admin_objet_edit', {'idobjet': objet.idobjet}) }}" class="btn btn-primary">Editer</a>
+        {{ include('admin/objet/_delete_form.html.twig') }}
+    </div>
+{% endblock %}
