@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Form\Admin;
 
 use App\Entity\Admin\ObjetSearch;
 use App\Entity\Categorie;
 use App\Entity\User;
+use App\Form\Type\CategoryType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,14 +22,8 @@ class ObjetSearchType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'emailuser',
                 'multiple' => true
-                ])
-            ->add('categories', EntityType::class, [
-                'required' => false,
-                'class' => Categorie::class,
-                'choice_label' => 'nomcategorie',
-                'multiple' => true
             ])
-        ;
+            ->add('categories', CategoryType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
