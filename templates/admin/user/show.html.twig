@@ -38,15 +38,26 @@
                     </tr>
                     <tr>
                         <th>Avatar</th>
-                        <td><img src="{{ user.avatar }}" /></td>
+                        <td><img src="{{ user.avatar }}"/></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <div class="col-sm">
                 <h2>Liste des récents objets listés</h2>
-                TODO
-                {# TODO #}
+                {% for objet in user.objets %}
+                    <span class="badge badge-pill badge-primary">{{ objet.idcategorie.nomcategorie }}</span>
+                    <a href="{{ path('admin_objet_show', {'idobjet': objet.idobjet}) }}"
+                       >{{ objet.nomobjet }}</a>
+                    {% if objet.disponible %}
+                        <span class="badge badge-pill badge-success">Disponible</span>
+                    {% else %}
+                        <span class="badge badge-pill badge-danger">Non disponible</span>
+                    {% endif %}
+                    <hr/>
+                {% else %}
+                    Pas d'objets listé sur le site pour le moment
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -55,7 +66,7 @@
         <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">Retour à la liste</a>
         <a href="{{ path('admin_user_edit', {'iduser': user.iduser}) }}" class="btn btn-primary">Editer</a>
         {% if is_granted(constant('App\\Security\\AppAccess::ADMIN_USER_BAN'), user) %}
-        {{ include('admin/user/_ban_form.html.twig') }}
+            {{ include('admin/user/_ban_form.html.twig') }}
         {% endif %}
         {{ include('admin/user/_delete_form.html.twig') }}
     </div>
