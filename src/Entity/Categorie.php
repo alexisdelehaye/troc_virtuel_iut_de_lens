@@ -49,9 +49,15 @@ class Categorie
      */
     private $categories;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Objet", mappedBy="idcategorie")
+     */
+    private $objets;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->objets = new ArrayCollection();
     }
 
     public function getIdcategorie(): ?int
@@ -130,4 +136,13 @@ class Categorie
 
         return $this;
     }
+
+    /**
+     * @return Collection|Objet[]
+     */
+    public function getObjets(): Collection
+    {
+        return $this->objets;
+    }
+
 }

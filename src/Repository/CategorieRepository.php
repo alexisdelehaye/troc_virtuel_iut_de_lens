@@ -21,7 +21,6 @@ class CategorieRepository extends ServiceEntityRepository
         parent::__construct($registry, Categorie::class);
     }
 
-
     /**
      * @return Categorie[] Returns an array of Categorie objects
      */
@@ -34,29 +33,4 @@ class CategorieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-    /**
-     * @return Categorie[] Returns an array of Categorie objects
-     */
-    public function findAllChildrenCategoryByParent($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.idcategoriePere = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getResult();
-    }
-
-
-    /*
-    public function findOneBySomeField($value): ?Categorie
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
