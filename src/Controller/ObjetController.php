@@ -7,6 +7,7 @@ use App\Entity\Conversation;
 use App\Entity\Objet;
 use App\Entity\Photo;
 use App\Entity\Transaction;
+use App\Entity\Typetransaction;
 use App\Form\ObjetType;
 use App\Form\PhotoType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,17 +34,17 @@ class ObjetController extends AbstractController
             ->getRepository(Categorie::class)
             ->findAll();
 
-        $photos =  $this->getDoctrine()
+        $photos = $this->getDoctrine()
             ->getRepository(Photo::class)
-            ->findBy(['imageprincipale'=>true]);
+            ->findBy(['imageprincipale' => true]);
 
-        return $this->render('objet/index.html.twig', ['objets' => $objets,'categories' => $categories,'photos' =>$photos]);
+        return $this->render('objet/index.html.twig', ['objets' => $objets, 'categories' => $categories, 'photos' => $photos]);
     }
 
     /**
      * @Route("/new", name="objet_new", methods={"GET","POST"})
      */
-    public function new(Request $request,TokenStorageInterface $tokenStorage): Response
+    public function new(Request $request, TokenStorageInterface $tokenStorage): Response
     {
         $user = $tokenStorage->getToken()->getUser();
 
@@ -78,23 +79,21 @@ class ObjetController extends AbstractController
         $user = $tokenStorage->getToken()->getUser();
         $listePhotosObjet = $this->getDoctrine()
             ->getRepository(Photo::class)
-            ->findBy(array('objetobjet'=>$objet));
+            ->findBy(array('objetobjet' => $objet));
 
         $listeDemandesObjet = ($user == $objet->getIdproprietaire()) ? $this->getDoctrine()
             ->getRepository(Conversation::class)
             ->findBy(array('idobjetconcerne' => $objet->getIdobjet())) : null;
 
 
-
-        return $this->render('objet/show.html.twig', ['objet' => $objet,'photosObjet' => $listePhotosObjet, 'DemandesObjet' => $listeDemandesObjet]);
+        return $this->render('objet/show.html.twig', ['objet' => $objet, 'photosObjet' => $listePhotosObjet, 'DemandesObjet' => $listeDemandesObjet]);
     }
-
 
 
     /**
      * @Route("/{idobjet}/edit", name="objet_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Objet $objet,TokenStorageInterface $tokenStorage): Response
+    public function edit(Request $request, Objet $objet, TokenStorageInterface $tokenStorage): Response
     {
         $user = $tokenStorage->getToken()->getUser();
 
@@ -125,7 +124,7 @@ class ObjetController extends AbstractController
     /**
      * @Route("/{idobjet}", name="objet_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Objet $objet,TokenStorageInterface $tokenStorage): Response
+    public function delete(Request $request, Objet $objet, TokenStorageInterface $tokenStorage): Response
     {
         $user = $tokenStorage->getToken()->getUser();
 
@@ -146,19 +145,16 @@ class ObjetController extends AbstractController
      */
     public function FiltreObjetSelonCategorie(Request $request): Response
     {
-        $objetsOfCategorie =$this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie'=> $request->query->get('id_categorie')]);
-
+        $objetsOfCategorie = $this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie' => $request->query->get('id_categorie')]);
         $categories = $this->getDoctrine()
             ->getRepository(Categorie::class)
             ->findAll();
 
         $listePhotos = $this->getDoctrine()
             ->getRepository(Photo::class)
-            ->findBy(['imageprincipale'=>true]);
+            ->findBy(['imageprincipale' => true]);
 
-        return $this->render('objet/index.html.twig', ['objets' => $objetsOfCategorie,'categories' => $categories,'photos' => $listePhotos]);
-
-
+        return $this->render('objet/index.html.twig', ['objets' => $objetsOfCategorie, 'categories' => $categories, 'photos' => $listePhotos]);
     }
 
 
@@ -166,21 +162,20 @@ class ObjetController extends AbstractController
      * @Route("/user/showUsersObject", name="objet_showUsersObject", methods={"GET"})
      */
     public function showUsersObject(TokenStorageInterface $tokenStorage): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
-
     {
         $user = $tokenStorage->getToken()->getUser();
-
         if ($user !== 'anon.') {
             $listeObjets = $this->getDoctrine()
                 ->getRepository('App\Entity\Objet')
                 ->findBy(['idproprietaire' => $user->getIduser()]);
-
             return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $user]);
-
         }
-
         return $this->redirectToRoute('objet_index');
     }
+
+
+
+
 
 
 }

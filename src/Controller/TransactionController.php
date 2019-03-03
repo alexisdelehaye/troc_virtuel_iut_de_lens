@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Entity\Objet;
 use App\Entity\Transaction;
+use App\Entity\Typetransaction;
 use App\Entity\User;
 use App\Form\TransactionType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @Route("/transaction")
@@ -29,7 +33,7 @@ class TransactionController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="transaction_new", methods={"GET","POST"})
+     * @Route("/new/", name="transaction_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -63,6 +67,30 @@ class TransactionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/newTransaction/{conversation}/{nomTransaction}", name="transaction_newTransaction", methods={"GET","POST"}, defaults={"nomTransaction"=null, "conversation"=null})
+     */
+    public function newTransaction(Request $request, Conversation $conversation = null,string $nomTransaction = null): Response
+    {
+
+        $transactionPret = new Transaction();
+        $form = $this->createForm(TransactionType::class, $transactionPret, ['conversation' => $conversation, 'nomTransaction' => $nomTransaction]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($transactionPret);
+            $entityManager->flush();
+            return $this->redirectToRoute('transaction_index');
+        }
+
+        return $this->render('transaction/new.html.twig', [
+            'transaction' => $transactionPret,
+            'form' => $form->createView(),
+        ]);
+
+    }
+
 
     /**
      * @Route("/{idtransaction}", name="transaction_show", methods={"GET"})
@@ -105,4 +133,20 @@ class TransactionController extends AbstractController
 
         return $this->redirectToRoute('transaction_index');
     }
+
+    //todo trouvez action à réalisé pour retourner l'objet à son propriétaire (processus de don du nouveau à l'ancien propriétaire ??)
+    public function finPretObjetUsers() { //todo trouvez un moyen de faire tourner une fonction au runtime pour retourner l'objet à son prorpiétaire quand la periode de près est terminée
+        $transaction = $this->getDoctrine()->getManager()->getRepository(Transaction::class)->findAll();
+        foreach ($transaction as $tr) {
+            if (is_null( $tr->getIdtypetranasaction() === false)) {
+                $typeTransaction = $this->getDoctrine()->getManager()->getRepository(Typetransaction::class)->findOneBy(['id' => $tr->getIdtypetranasaction()]);
+                $dateNow =  new DateTime('NOW');
+                if ($typeTransaction->getDatefintransaction() >= $dateNow) {
+
+                }
+            }
+        }
+    }
+
+
 }

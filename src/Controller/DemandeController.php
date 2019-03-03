@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Entity\Demande;
+use App\Entity\Transaction;
 use App\Form\DemandeType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/demande")
@@ -90,4 +93,14 @@ class DemandeController extends AbstractController
 
         return $this->redirectToRoute('demande_index');
     }
+
+/*
+    public function demandeEchangeObjet(Request $request, Conversation $conversation, TokenStorageInterface $tokenStorage){
+        $user = $tokenStorage->getToken()->getUser();
+        $transactionDemandeur1 = new Transaction();
+        $transactionDemandeur1->setTransactionrealisee(true);
+        $transactionDemandeur1->setIdobjet($demande->get)
+    }
+
+*/
 }

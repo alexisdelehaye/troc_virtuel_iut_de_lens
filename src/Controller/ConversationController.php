@@ -63,7 +63,7 @@ class ConversationController extends AbstractController
     /**
      * @Route("/{idconversation}", name="conversation_show", methods={"GET"})
      */
-    public function show(Conversation $conversation, TokenStorageInterface $tokenStorage): Response
+    public function show(Conversation $conversation, TokenStorageInterface $tokenStorage): Response // acces au message uniquement pour l'user destinataire et celui  qui l'a envoyé
     {
         $user = $tokenStorage->getToken()->getUser();
 
