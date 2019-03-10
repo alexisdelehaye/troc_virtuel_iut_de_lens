@@ -33,41 +33,36 @@ class ObjetController extends AbstractController
             ->getRepository(Categorie::class)
             ->findAll();
 
-        $photos =  $this->getDoctrine()
+        $photos = $this->getDoctrine()
             ->getRepository(Photo::class)
-            ->findBy(['imageprincipale'=>true]);
+            ->findBy(['imageprincipale' => true]);
 
-        return $this->render('objet/index.html.twig', ['objets' => $objets,'categories' => $categories,'photos' =>$photos]);
+        return $this->render('objet/index.html.twig', ['objets' => $objets, 'categories' => $categories, 'photos' => $photos]);
     }
 
     /**
      * @Route("/new", name="objet_new", methods={"GET","POST"})
      */
-    public function new(Request $request,TokenStorageInterface $tokenStorage): Response
+    public function new(Request $request): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $objet = new Objet();
+        $form = $this->createForm(ObjetType::class, $objet);
+        $form->handleRequest($request);
 
-        if ($user !== 'anon.') {
-            $objet = new Objet();
-            $form = $this->createForm(ObjetType::class, $objet);
-            $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($objet);
+            $entityManager->flush();
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($objet);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('objet_index');
-            }
-
-            return $this->render('objet/new.html.twig', [
-                'objet' => $objet,
-                'form' => $form->createView(),
-            ]);
+            return $this->redirectToRoute('objet_index');
         }
-        return $this->redirectToRoute('objet_index');
 
+        return $this->render('objet/new.html.twig', [
+            'objet' => $objet,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -78,67 +73,56 @@ class ObjetController extends AbstractController
         $user = $tokenStorage->getToken()->getUser();
         $listePhotosObjet = $this->getDoctrine()
             ->getRepository(Photo::class)
-            ->findBy(array('objetobjet'=>$objet));
+            ->findBy(array('objetobjet' => $objet));
 
         $listeDemandesObjet = ($user == $objet->getIdproprietaire()) ? $this->getDoctrine()
             ->getRepository(Conversation::class)
             ->findBy(array('idobjetconcerne' => $objet->getIdobjet())) : null;
 
 
-
-        return $this->render('objet/show.html.twig', ['objet' => $objet,'photosObjet' => $listePhotosObjet, 'DemandesObjet' => $listeDemandesObjet]);
+        return $this->render('objet/show.html.twig', ['objet' => $objet, 'photosObjet' => $listePhotosObjet, 'DemandesObjet' => $listeDemandesObjet]);
     }
-
-
 
     /**
      * @Route("/{idobjet}/edit", name="objet_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Objet $objet,TokenStorageInterface $tokenStorage): Response
+    public function edit(Request $request, Objet $objet): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
+        $this->denyAccessUnlessGranted('OBJET_EDIT', $objet);
 
-        if ($user !== 'anon.' && $user == $objet->getIdproprietaire()) {
+        $form = $this->createForm(ObjetType::class, $objet);
+        $form->handleRequest($request);
 
-            $form = $this->createForm(ObjetType::class, $objet);
-            $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $this->getDoctrine()->getManager()->flush();
-
-                return $this->redirectToRoute('objet_index', ['idobjet' => $objet->getIdobjet()]);
-            }
-            $listePhotosObjet = $this->getDoctrine()
-                ->getRepository(Photo::class)
-                ->findBy(array('objetobjet' => $objet));
-
-            return $this->render('objet/edit.html.twig', [
-                'objet' => $objet,
-                'form' => $form->createView(),
-                'listePhotos' => $listePhotosObjet
-            ]);
+            return $this->redirectToRoute('objet_index', ['idobjet' => $objet->getIdobjet()]);
         }
+        $listePhotosObjet = $this->getDoctrine()
+            ->getRepository(Photo::class)
+            ->findBy(array('objetobjet' => $objet));
 
-        return $this->redirectToRoute('objet_index');
+        return $this->render('objet/edit.html.twig', [
+            'objet' => $objet,
+            'form' => $form->createView(),
+            'listePhotos' => $listePhotosObjet
+        ]);
+
     }
 
     /**
      * @Route("/{idobjet}", name="objet_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Objet $objet,TokenStorageInterface $tokenStorage): Response
+    public function delete(Request $request, Objet $objet, TokenStorageInterface $tokenStorage): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
+        $this->denyAccessUnlessGranted('OBJET_DELETE', $objet);
 
-        if ($user !== 'anon.' && $user == $objet->getIdproprietaire()) {
-
-            if ($this->isCsrfTokenValid('delete' . $objet->getIdobjet(), $request->request->get('_token'))) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->remove($objet);
-                $entityManager->flush();
-            }
+        if ($this->isCsrfTokenValid('delete' . $objet->getIdobjet(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($objet);
+            $entityManager->flush();
         }
 
-        return $this->redirectToRoute('objet_index');
     }
 
     /**
@@ -146,7 +130,7 @@ class ObjetController extends AbstractController
      */
     public function FiltreObjetSelonCategorie(Request $request): Response
     {
-        $objetsOfCategorie =$this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie'=> $request->query->get('id_categorie')]);
+        $objetsOfCategorie = $this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie' => $request->query->get('id_categorie')]);
 
         $categories = $this->getDoctrine()
             ->getRepository(Categorie::class)
@@ -154,33 +138,27 @@ class ObjetController extends AbstractController
 
         $listePhotos = $this->getDoctrine()
             ->getRepository(Photo::class)
-            ->findBy(['imageprincipale'=>true]);
+            ->findBy(['imageprincipale' => true]);
 
-        return $this->render('objet/index.html.twig', ['objets' => $objetsOfCategorie,'categories' => $categories,'photos' => $listePhotos]);
+        return $this->render('objet/index.html.twig', ['objets' => $objetsOfCategorie, 'categories' => $categories, 'photos' => $listePhotos]);
 
 
     }
-
 
     /**
      * @Route("/user/showUsersObject", name="objet_showUsersObject", methods={"GET"})
      */
-    public function showUsersObject(TokenStorageInterface $tokenStorage): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
-
+    public function showUsersObject(): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
     {
-        $user = $tokenStorage->getToken()->getUser();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        if ($user !== 'anon.') {
-            $listeObjets = $this->getDoctrine()
-                ->getRepository('App\Entity\Objet')
-                ->findBy(['idproprietaire' => $user->getIduser()]);
+        $listeObjets = $this->getDoctrine()
+            ->getRepository('App\Entity\Objet')
+            ->findBy(['idproprietaire' => $this->getUser()->getIduser()]);
 
-            return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $user]);
+        return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $user]);
 
-        }
 
-        return $this->redirectToRoute('objet_index');
     }
-
 
 }

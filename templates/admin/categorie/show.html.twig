@@ -27,11 +27,19 @@
             </div>
             <div class="col-sm">
                 <h2>Liste des récents objets listés / </h2>
-                TODO
-                {# TODO #}
-                <h2>Statistiques </h2>
-                TODO
-                {# TODO #}
+                {% for objet in categorie.objets %}
+                    <span class="badge badge-pill badge-primary">{{ objet.idproprietaire.pseudo }}</span>
+                    <a href="{{ path('admin_objet_show', {'idobjet': objet.idobjet}) }}"
+                    >{{ objet.nomobjet }}</a>
+                    {% if objet.disponible %}
+                        <span class="badge badge-pill badge-success">Disponible</span>
+                    {% else %}
+                        <span class="badge badge-pill badge-danger">Non disponible</span>
+                    {% endif %}
+                    <hr/>
+                {% else %}
+                    Pas d'objets dans la catégorie pour le moment
+                {% endfor %}
             </div>
         </div>
     </div>

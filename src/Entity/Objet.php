@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -72,6 +74,16 @@ class Objet
      * })
      */
     private $idproprietaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Photo", mappedBy="objetobjet")
+     */
+    private $photos;
+
+    public function __construct()
+    {
+        $this->photos = new ArrayCollection();
+    }
 
     public function getIdobjet(): ?int
     {
@@ -150,10 +162,17 @@ class Objet
         return $this;
     }
 
+    /**
+     * @return Collection|Photo[]
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
     public function __toString()
     {
         return $this->getNomobjet()." appartenant à ".$this->getIdproprietaire();
     }
-
 
 }

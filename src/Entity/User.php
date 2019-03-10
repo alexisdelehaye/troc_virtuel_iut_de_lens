@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -75,7 +77,6 @@ class User implements UserInterface
      */
     private $idprofil;
 
-
     /**
      * @ORM\Column(type="array")
      */
@@ -85,6 +86,16 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $banni = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Objet", mappedBy="idproprietaire")
+     */
+    private $objets;
+
+    public function __construct()
+    {
+        $this->objets = new ArrayCollection();
+    }
 
     public function getIduser(): ?int
     {
@@ -178,7 +189,6 @@ class User implements UserInterface
     public function __toString()
     {
         return $this->getNomuser().' '.$this->getPrenompersonne();
-        // TODO: Implement __toString() method.
     }
 
 
@@ -215,7 +225,6 @@ class User implements UserInterface
     public function getPassword()
     {
         return (string) $this->passworduser;
-        // TODO: Implement getPassword() method.
     }
 
     /**
@@ -227,7 +236,6 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
     }
 
     /**
@@ -248,9 +256,7 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
     }
-
 
     public function setRoles(array $roles): self
     {
@@ -269,5 +275,13 @@ class User implements UserInterface
         $this->banni = $banni;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Objet[]
+     */
+    public function getObjets(): Collection
+    {
+        return $this->objets;
     }
 }

@@ -39,8 +39,11 @@
             </div>
             <div class="col-sm">
                 <h2>Liste des photos / </h2>
-                TODO
-                {# TODO #}
+                {% for photo in objet.photos %}
+                    <a href="{{ path('admin_objet_photos', {'idobjet' : objet.idobjet}) }}"><img src="{{ base_url }}{{ photo.cheminphoto }}" class="miniaphoto" /></a>
+                {% else %}
+                    <p>Pas de photos</p>
+                {% endfor %}
                 <h2>transaction </h2>
                 TODO
                 {# TODO #}
