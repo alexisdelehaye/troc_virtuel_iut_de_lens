@@ -34,32 +34,28 @@ class PhotoController extends AbstractController
      */
     public function new(Objet $objet, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('PHOTO_ADD', $objet);
 
-        $user = $this->getUser();
-        if ($user !== 'anon.' && $objet !== null && $objet->getIdproprietaire() == $user) {
-            $photo = new Photo();
-            $form = $this->createForm(PhotoType::class, $photo);
-            $form->handleRequest($request);
-            $directory = 'img/';
-            $photo->setObjetobjet($objet);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $file = $form['cheminphoto']->getData();
-                $newFileName = rand(1, 99999) . '.' . $file->guessExtension();
-                $file->move($directory, $newFileName);
-                $photo->setCheminphoto($newFileName);
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($photo);
-                $entityManager->flush();
-                return $this->redirectToRoute('objet_index');
-            }
-
-            return $this->render('photo/new.html.twig', [
-                'photo' => $photo,
-                'form' => $form->createView(),
-            ]);
-
+        $photo = new Photo();
+        $form = $this->createForm(PhotoType::class, $photo);
+        $form->handleRequest($request);
+        $directory = 'img/';
+        $photo->setObjetobjet($objet);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form['cheminphoto']->getData();
+            $newFileName = rand(1, 99999) . '.' . $file->guessExtension();
+            $file->move($directory, $newFileName);
+            $photo->setCheminphoto($newFileName);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($photo);
+            $entityManager->flush();
+            return $this->redirectToRoute('objet_index');
         }
-        return $this->redirectToRoute('objet_index');
+
+        return $this->render('photo/new.html.twig', [
+            'photo' => $photo,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -73,12 +69,11 @@ class PhotoController extends AbstractController
     /**
      * @Route("/{idphoto}/edit", name="photo_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Photo $photo, TokenStorageInterface $tokenStorage): Response
+    public function edit(Request $request, Photo $photo): Response
     {
+        $this->denyAccessUnlessGranted('PHOTO_EDIT', $photo->getObjetobjet());
 
-        $user = $tokenStorage->getToken()->getUser();
-        if ($user !== 'anon.' && $photo->getObjetobjet()->getIdproprietaire() == $user) {
-            $form = $this->createForm(PhotoType::class, $photo);
+        $form = $this->createForm(PhotoType::class, $photo);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -91,25 +86,20 @@ class PhotoController extends AbstractController
                 'photo' => $photo,
                 'form' => $form->createView(),
             ]);
-        }
-        return $this->redirectToRoute('objet_index');
     }
 
     /**
      * @Route("/{idphoto}", name="photo_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Photo $photo, TokenStorageInterface $tokenStorage): Response
+    public function delete(Request $request, Photo $photo): Response
     {
-
-        $user = $tokenStorage->getToken()->getUser();
-        if ($user !== 'anon.' && $photo->getObjetobjet()->getIdproprietaire() == $user) {
-            if ($this->isCsrfTokenValid('delete' . $photo->getIdphoto(), $request->request->get('_token'))) {
+        $this->denyAccessUnlessGranted('PHOTO_DELETE', $photo->getObjetobjet());
+        if ($this->isCsrfTokenValid('delete' . $photo->getIdphoto(), $request->request->get('_token'))) {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($photo);
                 $entityManager->flush();
             }
-        }
-        return $this->redirectToRoute('objet_index');
+
     }
 
 }
