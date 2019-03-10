@@ -32,11 +32,10 @@ class PhotoController extends AbstractController
     /**
      * @Route("/{id}/new", name="add_photo_to_objet", methods={"GET","POST"})
      */
-    public function new(Request $request, TokenStorageInterface $tokenStorage): Response
+    public function new(Objet $objet, Request $request): Response
     {
 
-        $user = $tokenStorage->getToken()->getUser();
-        $objet = $this->getDoctrine()->getManager()->getRepository(Objet::class)->find($request->query->get('id_objet'));
+        $user = $this->getUser();
         if ($user !== 'anon.' && $objet !== null && $objet->getIdproprietaire() == $user) {
             $photo = new Photo();
             $form = $this->createForm(PhotoType::class, $photo);
