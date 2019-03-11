@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Message
  *
+ * @ApiResource()
  * @ORM\Table(name="message", indexes={@ORM\Index(name="fk_Conversation_has_User_User1_idx", columns={"User_idUser"}), @ORM\Index(name="fk_Conversation_has_User_Conversation1_idx", columns={"Conversation_idConversation"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\MessageRepository")
