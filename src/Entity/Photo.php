@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 /**
  * Photo
  *
+ * @ApiResource()
  * @ORM\Table(name="photo", indexes={@ORM\Index(name="fk_Photo_Objet1_idx", columns={"Objet_idObjet"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\PhotoRepository")

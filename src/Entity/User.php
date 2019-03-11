@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * User
  *
+ * @ApiResource()
  * @ORM\Table(name="user", indexes={@ORM\Index(name="idProfil_idx", columns={"idProfil"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
