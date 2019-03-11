@@ -156,7 +156,7 @@ class ObjetController extends AbstractController
             ->getRepository('App\Entity\Objet')
             ->findBy(['idproprietaire' => $this->getUser()->getIduser()]);
 
-        return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $user]);
+        return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $this->getUser()]);
 
 
     }
