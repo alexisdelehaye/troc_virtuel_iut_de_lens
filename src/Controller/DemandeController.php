@@ -93,14 +93,4 @@ class DemandeController extends AbstractController
 
         return $this->redirectToRoute('demande_index');
     }
-
-/*
-    public function demandeEchangeObjet(Request $request, Conversation $conversation, TokenStorageInterface $tokenStorage){
-        $user = $tokenStorage->getToken()->getUser();
-        $transactionDemandeur1 = new Transaction();
-        $transactionDemandeur1->setTransactionrealisee(true);
-        $transactionDemandeur1->setIdobjet($demande->get)
-    }
-
-*/
 }

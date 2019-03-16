@@ -9,12 +9,11 @@ use App\Entity\Photo;
 use App\Entity\Transaction;
 use App\Entity\Typetransaction;
 use App\Form\ObjetType;
-use App\Form\PhotoType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 
 /**
  * @Route("/objet")
@@ -59,7 +58,7 @@ class ObjetController extends AbstractController
                 $entityManager->persist($objet);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('objet_index');
+                return $this->redirectToRoute('objet_show',['idobjet' => $objet->getIdobjet()]);
             }
 
             return $this->render('objet/new.html.twig', [
@@ -67,7 +66,7 @@ class ObjetController extends AbstractController
                 'form' => $form->createView(),
             ]);
         }
-        return $this->redirectToRoute('objet_index');
+        return $this->redirectToRoute('objet_show');
 
     }
 
@@ -161,21 +160,39 @@ class ObjetController extends AbstractController
     /**
      * @Route("/user/showUsersObject", name="objet_showUsersObject", methods={"GET"})
      */
-    public function showUsersObject(TokenStorageInterface $tokenStorage): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
+    public function showUsersObject(): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
     {
-        $user = $tokenStorage->getToken()->getUser();
-        if ($user !== 'anon.') {
-            $listeObjets = $this->getDoctrine()
-                ->getRepository('App\Entity\Objet')
-                ->findBy(['idproprietaire' => $user->getIduser()]);
-            return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $user]);
-        }
-        return $this->redirectToRoute('objet_index');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $listeObjets = $this->getDoctrine()
+            ->getRepository('App\Entity\Objet')
+            ->findBy(['idproprietaire' => $this->getUser()->getIduser()]);
+        return $this->render('objet/listeObjectsConnectedUser.html.twig', ['objets' => $listeObjets, 'user' => $this->getUser()]);
     }
 
+    /**
+     * @Route("/user/showUsersObjectPret", name="objet_showUsersObjectPret", methods={"GET","POST"})
+     */
+    public function showUsersObjectPret(): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $listePret = $this->getDoctrine()
+            ->getRepository(Typetransaction::class)
+            ->listePretObjets();
+        $listeObjetsPretes = $this->getObjetsPretes($listePret);
 
+       return $this->render('objet/listeObjetsPretees.html.twig', ['listeObjetsPretes' => $listeObjetsPretes, 'user' => $this->getUser()]);
+    }
 
-
-
-
+    public function getObjetsPretes(array $listePret) {
+        $listeObjetsPretes = array();
+        foreach ($listePret as $pret){
+            $objet = $this->getDoctrine()
+                ->getRepository(Transaction::class)
+                ->findOneBy(['idtypetranasaction' => $pret->getIdtypetransaction(), 'iduseroffrant' => $this->getUser()]);
+            if(is_null($objet) === false) {
+                array_push($listeObjetsPretes, $objet);
+            }
+        }
+        return $listeObjetsPretes;
+    }
 }

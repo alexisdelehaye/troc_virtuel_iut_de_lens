@@ -15,6 +15,7 @@ class MessageType extends AbstractType
 {
     private $securityChecker;
     private $token;
+    private $conversation;
 
     public function __construct(AuthorizationCheckerInterface $securityChecker, TokenStorageInterface $token)
     {
@@ -26,6 +27,7 @@ class MessageType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->conversation = $options['conversation'];
         $builder
             ->add('contenu')
             ->add('conversationconversation')
@@ -42,6 +44,7 @@ class MessageType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Message::class,
+            'conversation' => null,
         ]);
     }
 
@@ -52,6 +55,7 @@ class MessageType extends AbstractType
         $message = $event->getData();
         //@explain set User and remove user field in form
         $message->setUseruser($this->token->getToken()->getUser());
+        $message->setConversationconversation($this->conversation);
         $form->remove('conversationconversation');
         $form->remove('useruser');
 

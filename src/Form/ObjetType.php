@@ -30,7 +30,6 @@ class ObjetType extends AbstractType
             ->add('descriptionobjet')
             ->add('disponible')
             ->add('idcategorie')
-            //->add('idtransaction')
             ->add('idproprietaire')
         ;
 
@@ -54,7 +53,7 @@ class ObjetType extends AbstractType
         $objet = $event->getData();
             //@explain set User and remove user field in form
         $objet->setIdproprietaire($this->token->getToken()->getUser());
-            $form->remove('idproprietaire');
+        $form->remove('idproprietaire');
 
         }
 }

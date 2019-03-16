@@ -29,21 +29,19 @@ class MessageController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="message_new", methods={"GET","POST"})
+     * @Route("/new/{conversation}", name="message_new", methods={"GET","POST"}, defaults={"conversation"=null})
      */
-    public function new(Request $request, TokenStorageInterface $tokenStorage): Response
+    public function new(Request $request, TokenStorageInterface $tokenStorage, Conversation $conversation = null): Response
     {
 
         $user = $tokenStorage->getToken()->getUser();
 
         if ($user !== 'anon.') {
-            $conversation = $this->getDoctrine()->getManager()->getRepository(Conversation::class)->find($request->query->get('id_conversation'));
             $message = new Message();
-            $form = $this->createForm(MessageType::class, $message);
+            $form = $this->createForm(MessageType::class, $message, ['conversation' => $conversation]);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $message->setConversationconversation($conversation);
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($message);
                 $entityManager->flush();
@@ -56,7 +54,6 @@ class MessageController extends AbstractController
                 'form' => $form->createView(),
             ]);
         }
-
         return $this->redirectToRoute('objet_index');
     }
 

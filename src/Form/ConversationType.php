@@ -17,6 +17,7 @@ class ConversationType extends AbstractType
 
     private $securityChecker;
     private $token;
+    private $objet;
 
     public function __construct(AuthorizationCheckerInterface $securityChecker, TokenStorageInterface $token)
     {
@@ -27,6 +28,7 @@ class ConversationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->objet = $options['objet'];
         $builder
             ->add('contenu')
             ->add('date')
@@ -44,22 +46,22 @@ class ConversationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Conversation::class,
+            'objet' => null
         ]);
     }
 
 
     public function preSetData(FormEvent $event)
     {
-
         $form = $event->getForm();
         $conversation = $event->getData();
         //@explain set User and remove user field in form
         $conversation->setIdenvoyeur($this->token->getToken()->getUser());
+        $conversation->setIdobjetconcerne($this->objet);
         $currentDate = new DateTime('now');
         $conversation->setDate($currentDate->format('d-m-Y H:i:s'));
         $form->remove('date');
         $form->remove('idenvoyeur');
         $form->remove('idobjetconcerne');
-
     }
 }

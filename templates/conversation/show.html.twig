@@ -50,7 +50,7 @@
 
     <a href="{{ path('conversation_index') }}">back to list</a>
 
-    <a href="{{ path('message_new', {'id_conversation': conversation.idconversation}) }}">Répondre à la conversation </a>
+    <a href="{{ path('message_new', {'conversation': conversation.idconversation}) }}">Répondre à la conversation </a>
 
    <br/> <a href="{{ path('transaction_newTransaction', {'conversation' :  conversation.idconversation, 'nomTransaction' :  'don'}) }}">Offrir l'objet à {{ conversation.idenvoyeur }} de la part de {{ conversation.idobjetconcerne.idproprietaire  }}</a>
     <br/><a href="{{ path('transaction_newTransaction', {'conversation' :  conversation.idconversation, 'nomTransaction' :  'prêt'}) }}">prêter l'objet "{{ conversation.idobjetconcerne }}"  à {{ conversation.idenvoyeur }} de la part de {{ conversation.idobjetconcerne.idproprietaire  }}</a>
