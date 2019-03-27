@@ -34,7 +34,7 @@ class PhotoController extends AbstractController
      */
     public function new(Objet $idobjet = null, Request $request): Response
     {
-        $this->denyAccessUnlessGranted('PHOTO_ADD');
+        $this->denyAccessUnlessGranted('PHOTO_ADD',$idobjet);
         $photo = new Photo();
         $form = $this->createForm(PhotoType::class, $photo,['idobjet' => $idobjet]);
         $form->handleRequest($request);
