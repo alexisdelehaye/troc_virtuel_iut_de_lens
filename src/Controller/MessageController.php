@@ -50,7 +50,7 @@ class MessageController extends AbstractController
                 'message' => $message,
                 'form' => $form->createView(),
             ]);
-}git
+}
     /**
      * @Route("/{idmessage}", name="message_show", methods={"GET"})
      */

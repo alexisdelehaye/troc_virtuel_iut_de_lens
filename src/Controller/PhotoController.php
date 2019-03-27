@@ -30,27 +30,19 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/new", name="add_photo_to_objet", methods={"GET","POST"})
+     * @Route("/{idobjet}/new", name="add_photo_to_objet", methods={"GET","POST"},  defaults={"idobjet"=null})
      */
-    public function new(Objet $objet, Request $request): Response
+    public function new(Objet $idobjet = null, Request $request): Response
     {
-        $this->denyAccessUnlessGranted('PHOTO_ADD', $objet);
-
+        $this->denyAccessUnlessGranted('PHOTO_ADD');
         $photo = new Photo();
-        $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->find($request->query->get('id_objet'));
-        $form = $this->createForm(PhotoType::class, $photo);
+        $form = $this->createForm(PhotoType::class, $photo,['idobjet' => $idobjet]);
         $form->handleRequest($request);
-        $directory = 'img/';
-        $photo->setObjetobjet($objet);
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form['cheminphoto']->getData();
-            $newFileName = rand(1, 99999) . '.' . $file->guessExtension();
-            $file->move($directory, $newFileName);
-            $photo->setCheminphoto($newFileName);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($photo);
             $entityManager->flush();
-            return $this->redirectToRoute('objet_show',['idobjet' => $objet->getIdobjet()]);
+            return $this->redirectToRoute('objet_show',['idobjet' => $idobjet->getIdobjet()]);
         }
 
         return $this->render('photo/new.html.twig', [
