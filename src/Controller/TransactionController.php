@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Entity\Objet;
 use App\Entity\Transaction;
+use App\Entity\Typetransaction;
 use App\Entity\User;
 use App\Form\TransactionType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @Route("/transaction")
@@ -29,40 +33,28 @@ class TransactionController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="transaction_new", methods={"GET","POST"})
+     * @Route("/newTransaction/{conversation}/{nomTransaction}", name="transaction_newTransaction", methods={"GET","POST"}, defaults={"nomTransaction"=null, "conversation"=null})
      */
-    public function new(Request $request): Response
+    public function newTransaction(Request $request, Conversation $conversation = null,string $nomTransaction = null): Response
     {
-        $transaction = new Transaction();
-        $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->findOneBy(['idobjet' => $request->query->get('id_objet')]);
-        $user_demandeur = $this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(['iduser' => $request->query->get('user_demandeur')]);
-        $user_offrant = $request->query->get('user_offrant');
-        $form = $this->createForm(TransactionType::class, $transaction);
+
+        $transactionPret = new Transaction();
+        $form = $this->createForm(TransactionType::class, $transactionPret, ['conversation' => $conversation, 'nomTransaction' => $nomTransaction]);
         $form->handleRequest($request);
-
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $transaction->setIdobjet($objet);
-            $transaction->setIduserdemandeur($user_demandeur);
-            $transaction->setIduseroffrant($this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(['iduser' => $user_offrant]));
-            $transaction->setTransactionrealisee(true);
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($transaction);
+            $entityManager->persist($transactionPret);
             $entityManager->flush();
-
-            $objet->setIdtransaction($this->getDoctrine()->getManager()->getRepository(Transaction::class)->find($transaction));
-            $objet->setIdproprietaire($user_demandeur);
-            $objet->setDisponible(false);
-            $entityManager->persist($objet);
-            $entityManager->flush();
-            return $this->redirectToRoute('objet_index');
+            return $this->redirectToRoute('objet_show', ['idobjet' => $transactionPret->getIdobjet()->getIdobjet()]);
         }
 
         return $this->render('transaction/new.html.twig', [
-            'transaction' => $transaction,
+            'transaction' => $transactionPret,
             'form' => $form->createView(),
         ]);
+
     }
+
 
     /**
      * @Route("/{idtransaction}", name="transaction_show", methods={"GET"})

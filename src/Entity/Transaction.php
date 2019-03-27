@@ -44,7 +44,7 @@ class Transaction
     /**
      * @var \Typetransaction
      *
-     * @ORM\ManyToOne(targetEntity="Typetransaction")
+     * @ORM\ManyToOne(targetEntity="Typetransaction", cascade={"persist"}))
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="idTypeTranasaction", referencedColumnName="idtypetransaction")
      * })
@@ -134,6 +134,10 @@ class Transaction
         $this->iduseroffrant = $iduseroffrant;
 
         return $this;
+    }
+    public function __toString()
+    {
+     return $this->getIdobjet()." ".$this->getIdtransaction();
     }
 
 

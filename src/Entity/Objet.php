@@ -29,7 +29,7 @@ class Objet
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nomObjet", type="string", length=45, nullable=true)
+     * @ORM\Column(name="nomObjet", type="text", length=65535, nullable=true)
      */
     private $nomobjet;
 
@@ -163,6 +163,7 @@ class Objet
 
         return $this;
     }
+
 
     /**
      * @return Collection|Photo[]

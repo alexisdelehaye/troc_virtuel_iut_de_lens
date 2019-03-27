@@ -107,6 +107,9 @@
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "fzaninotto/faker": {
+        "version": "v1.8.0"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -306,6 +309,9 @@
         }
     },
     "symfony/polyfill-intl-icu": {
+        "version": "v1.10.0"
+    },
+    "symfony/polyfill-intl-idn": {
         "version": "v1.10.0"
     },
     "symfony/polyfill-mbstring": {

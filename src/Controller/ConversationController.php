@@ -30,26 +30,21 @@ class ConversationController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="conversation_new", methods={"GET","POST"})
+     * @Route("/new/{objet}", name="conversation_new", methods={"GET","POST"}, defaults={"objet"=null})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Objet $objet = null): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         $conversation = new Conversation();
-        $objet = $this->getDoctrine()->getManager()->getRepository(Objet::class)->findOneBy(['idobjet' => $request->query->get('id_objet')]);
-        $form = $this->createForm(ConversationType::class, $conversation);
+        $form = $this->createForm(ConversationType::class, $conversation, ['objet' => $objet]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $conversation->setIdobjetconcerne($objet);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($conversation);
             $entityManager->flush();
 
-            return $this->redirectToRoute('conversation_index');
+            return $this->redirectToRoute('objet_show', ['idobjet' => $conversation->getIdobjetconcerne()->getIdobjet()]);
         }
-
         return $this->render('conversation/new.html.twig', [
             'conversation' => $conversation,
             'form' => $form->createView(),
@@ -65,7 +60,6 @@ class ConversationController extends AbstractController
 
         $listeMessage = $this->getDoctrine()->getManager()->getRepository(Message::class)->findBy(['conversationconversation' => $conversation]);
         return $this->render('conversation/show.html.twig', ['conversation' => $conversation, 'messages' => $listeMessage]);
-
     }
 
     /**

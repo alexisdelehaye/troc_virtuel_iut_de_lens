@@ -29,32 +29,28 @@ class MessageController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="message_new", methods={"GET","POST"})
+     * @Route("/new/{conversation}", name="message_new", methods={"GET","POST"}, defaults={"conversation"=null})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Conversation $conversation = null): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $conversation = $this->getDoctrine()->getManager()->getRepository(Conversation::class)->find($request->query->get('id_conversation'));
-        $message = new Message();
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+            $message = new Message();
+            $form = $this->createForm(MessageType::class, $message, ['conversation' => $conversation]);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $message->setConversationconversation($conversation);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($message);
-            $entityManager->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($message);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('conversation_show', ['idconversation' => $conversation->getIdconversation()]);
-        }
+                return $this->redirectToRoute('conversation_show', ['idconversation' => $conversation->getIdconversation()]);
+            }
 
-        return $this->render('message/new.html.twig', [
-            'message' => $message,
-            'form' => $form->createView(),
-        ]);
-
-    }
-
+            return $this->render('message/new.html.twig', [
+                'message' => $message,
+                'form' => $form->createView(),
+            ]);
+}git
     /**
      * @Route("/{idmessage}", name="message_show", methods={"GET"})
      */

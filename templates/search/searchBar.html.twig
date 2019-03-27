@@ -18,6 +18,12 @@
                     <a class="nav-link" href={{ path('message_index') }}>Messages</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href={{ path('objet_showUsersObject') }}>Objets en votre possession</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('objet_showUsersObjectPret') }}>Vos objets prêtés</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href={{ path('app_logout') }}>Se deconnecter</a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}

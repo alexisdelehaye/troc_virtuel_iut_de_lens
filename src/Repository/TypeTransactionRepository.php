@@ -47,4 +47,16 @@ class TypeTransactionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    public function listePretObjets() : array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->andWhere('p.datedebuttransaction IS NOT NULL')
+            ->andWhere('p.datefintransaction IS NOT NULL')
+            ->groupBy('p.idtypetransaction')
+            ->getQuery();
+
+        return $qb->execute();
+    }
 }

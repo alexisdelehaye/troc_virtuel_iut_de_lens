@@ -37,6 +37,7 @@ class PhotoController extends AbstractController
         $this->denyAccessUnlessGranted('PHOTO_ADD', $objet);
 
         $photo = new Photo();
+        $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->find($request->query->get('id_objet'));
         $form = $this->createForm(PhotoType::class, $photo);
         $form->handleRequest($request);
         $directory = 'img/';
@@ -49,7 +50,7 @@ class PhotoController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($photo);
             $entityManager->flush();
-            return $this->redirectToRoute('objet_index');
+            return $this->redirectToRoute('objet_show',['idobjet' => $objet->getIdobjet()]);
         }
 
         return $this->render('photo/new.html.twig', [

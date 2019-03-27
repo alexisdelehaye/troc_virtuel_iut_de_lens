@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prêts objets{% endblock %}
+
+{% block body %}
+    <h1>Liste des objets que vous avez prétées, {{ user }}</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom de l'objet</th>
+            <th>propriétaire actuel</th>
+            <th>Présentation de l'objet</th>
+            <th>Date de début de prêt</th>
+            <th>Date de fin de prêt</th>
+            <th>Contacter</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for objetsPretes in listeObjetsPretes %}
+            <tr>
+                <td>{{ objetsPretes.idobjet.nomobjet }}</td>
+                <td>{{objetsPretes.idobjet.idproprietaire}}</td>
+                <td>{{objetsPretes.idobjet.descriptionobjet}}</td>
+                <td>{{ objetsPretes.idtypetranasaction.datedebuttransaction|date("m/d/Y") }}</td>
+                <td>{{ objetsPretes.idtypetranasaction.datefintransaction|date("m/d/Y") }}</td>
+                {% if date(objetsPretes.idtypetranasaction.datefintransaction) <= date() and objetsPretes.idobjet.idproprietaire != user %}
+                    <td><a href="{{ path('conversation_new', {'objet' :  objetsPretes.idobjet.idobjet}) }}">Notifier {{ objetsPretes.idobjet.idproprietaire }} pour qu'il vous rende votre objet</a>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Vous n'avez de prêts d'objets, {{ user }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
