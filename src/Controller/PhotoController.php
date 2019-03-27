@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/photo")
@@ -31,8 +32,10 @@ class PhotoController extends AbstractController
     /**
      * @Route("/{id}/new", name="add_photo_to_objet", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Objet $objet, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('PHOTO_ADD', $objet);
+
         $photo = new Photo();
         $objet =  $this->getDoctrine()->getManager()->getRepository(Objet::class)->find($request->query->get('id_objet'));
         $form = $this->createForm(PhotoType::class, $photo);
@@ -41,8 +44,8 @@ class PhotoController extends AbstractController
         $photo->setObjetobjet($objet);
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['cheminphoto']->getData();
-            $newFileName =rand(1, 99999).'.'.$file->guessExtension();
-            $file->move($directory,$newFileName);
+            $newFileName = rand(1, 99999) . '.' . $file->guessExtension();
+            $file->move($directory, $newFileName);
             $photo->setCheminphoto($newFileName);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($photo);
@@ -69,19 +72,21 @@ class PhotoController extends AbstractController
      */
     public function edit(Request $request, Photo $photo): Response
     {
+        $this->denyAccessUnlessGranted('PHOTO_EDIT', $photo->getObjetobjet());
+
         $form = $this->createForm(PhotoType::class, $photo);
-        $form->handleRequest($request);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('photo_index', ['idphoto' => $photo->getIdphoto()]);
-        }
+                return $this->redirectToRoute('photo_index', ['idphoto' => $photo->getIdphoto()]);
+            }
 
-        return $this->render('photo/edit.html.twig', [
-            'photo' => $photo,
-            'form' => $form->createView(),
-        ]);
+            return $this->render('photo/edit.html.twig', [
+                'photo' => $photo,
+                'form' => $form->createView(),
+            ]);
     }
 
     /**
@@ -89,12 +94,13 @@ class PhotoController extends AbstractController
      */
     public function delete(Request $request, Photo $photo): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$photo->getIdphoto(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($photo);
-            $entityManager->flush();
-        }
+        $this->denyAccessUnlessGranted('PHOTO_DELETE', $photo->getObjetobjet());
+        if ($this->isCsrfTokenValid('delete' . $photo->getIdphoto(), $request->request->get('_token'))) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($photo);
+                $entityManager->flush();
+            }
 
-        return $this->redirectToRoute('photo_index');
     }
+
 }

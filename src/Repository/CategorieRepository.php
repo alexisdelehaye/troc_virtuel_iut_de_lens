@@ -14,37 +14,23 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class CategorieRepository extends ServiceEntityRepository
 {
+    private const ID_PARENT_CATEGORY = -1;
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Categorie::class);
     }
 
-    // /**
-    //  * @return Categorie[] Returns an array of Categorie objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Categorie[] Returns an array of Categorie objects
+     */
+    public function findAllParentCategory()
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->orWhere('c.categoriePere = :val')
+            ->setParameter('val', self::ID_PARENT_CATEGORY)
+            ->orWhere('c.categoriePere IS NULL')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Categorie
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

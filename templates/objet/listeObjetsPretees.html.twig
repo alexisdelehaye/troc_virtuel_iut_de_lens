@@ -12,7 +12,7 @@
             <th>Présentation de l'objet</th>
             <th>Date de début de prêt</th>
             <th>Date de fin de prêt</th>
-            <th>Contact</th>
+            <th>Contacter</th>
         </tr>
         </thead>
         <tbody>
@@ -23,13 +23,13 @@
                 <td>{{objetsPretes.idobjet.descriptionobjet}}</td>
                 <td>{{ objetsPretes.idtypetranasaction.datedebuttransaction|date("m/d/Y") }}</td>
                 <td>{{ objetsPretes.idtypetranasaction.datefintransaction|date("m/d/Y") }}</td>
-                {% if date(objetsPretes.idtypetranasaction.datefintransaction) <= date() and objetsPretes.idobjet.idproprietaire == user %}
+                {% if date(objetsPretes.idtypetranasaction.datefintransaction) <= date() and objetsPretes.idobjet.idproprietaire != user %}
                     <td><a href="{{ path('conversation_new', {'objet' :  objetsPretes.idobjet.idobjet}) }}">Notifier {{ objetsPretes.idobjet.idproprietaire }} pour qu'il vous rende votre objet</a>
                 {% endif %}
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">Vous n'avez encore prété d'objets, {{ user }}</td>
+                <td colspan="5">Vous n'avez de prêts d'objets, {{ user }}</td>
             </tr>
 
         {% endfor %}

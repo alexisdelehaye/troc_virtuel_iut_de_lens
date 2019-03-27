@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Welcome!{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
     <!-- Bootstrap core CSS -->
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    {% block stylesheets %}
+        <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    {% endblock %}
+
 </head>
 <body>
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -40,7 +42,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ route starts with 'admin_profil' ? 'active' }}"
-                           href="#">
+                           href="{{ path('admin_profil_index') }}">
                             Gestion des profils
                         </a>
                     </li>
@@ -55,6 +57,10 @@
                            href="{{ path('admin_categorie_index') }}">
                             Gestion des catégories
                         </a>
+                        <a class="nav-link {{ route starts with 'admin_objet' ? 'active' }}"
+                           href="{{ path('admin_objet_index') }}">
+                            Gestion des objets
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -66,8 +72,10 @@
         </main>
     </div>
 </div>
-{% block javascripts %}{% endblock %}
-<script src="{{ asset('js/bootstrap.js') }}"></script>
-<script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+{% block javascripts %}
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+{% endblock %}
+
 </body>
 </html>

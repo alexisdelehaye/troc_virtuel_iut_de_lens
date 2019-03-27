@@ -31,12 +31,9 @@ class MessageController extends AbstractController
     /**
      * @Route("/new/{conversation}", name="message_new", methods={"GET","POST"}, defaults={"conversation"=null})
      */
-    public function new(Request $request, TokenStorageInterface $tokenStorage, Conversation $conversation = null): Response
+    public function new(Request $request, Conversation $conversation = null): Response
     {
-
-        $user = $tokenStorage->getToken()->getUser();
-
-        if ($user !== 'anon.') {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
             $message = new Message();
             $form = $this->createForm(MessageType::class, $message, ['conversation' => $conversation]);
             $form->handleRequest($request);
@@ -53,10 +50,7 @@ class MessageController extends AbstractController
                 'message' => $message,
                 'form' => $form->createView(),
             ]);
-        }
-        return $this->redirectToRoute('objet_index');
-    }
-
+}git
     /**
      * @Route("/{idmessage}", name="message_show", methods={"GET"})
      */
@@ -69,47 +63,37 @@ class MessageController extends AbstractController
     /**
      * @Route("/{idmessage}/edit", name="message_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Message $message, TokenStorageInterface $tokenStorage): Response
+    public function edit(Request $request, Message $message): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
+        $this->denyAccessUnlessGranted('MESSAGE_EDIT', $message);
 
-        if ($user !== 'anon.' && ($message->getUseruser() == $user)) {
+        $form = $this->createForm(MessageType::class, $message);
+        $form->handleRequest($request);
 
-            $form = $this->createForm(MessageType::class, $message);
-            $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $this->getDoctrine()->getManager()->flush();
-
-                return $this->redirectToRoute('conversation_show', ['idconversation' => $message->getConversationconversation()->getIdconversation()]);
-            }
-
-            return $this->render('message/edit.html.twig', [
-                'message' => $message,
-                'form' => $form->createView(),
-            ]);
+            return $this->redirectToRoute('conversation_show', ['idconversation' => $message->getConversationconversation()->getIdconversation()]);
         }
-        return $this->redirectToRoute('objet_index');
+
+        return $this->render('message/edit.html.twig', [
+            'message' => $message,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
      * @Route("/{idmessage}", name="message_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Message $message, TokenStorageInterface $tokenStorage): Response
+    public function delete(Request $request, Message $message): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
-
-        if ($user !== 'anon.' && ($message->getUseruser() == $user)) {
-
-            if ($this->isCsrfTokenValid('delete' . $message->getIdmessage(), $request->request->get('_token'))) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->remove($message);
-                $entityManager->flush();
-            }
-
-            return $this->redirectToRoute('conversation_show', ['idconversation' => $message->getConversationconversation()->getIdconversation()]);
+        $this->denyAccessUnlessGranted('MESSAGE_DELETE', $message);
+        if ($this->isCsrfTokenValid('delete' . $message->getIdmessage(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($message);
+            $entityManager->flush();
         }
-        return $this->redirectToRoute('objet_index');
-    }
 
+        return $this->redirectToRoute('conversation_show', ['idconversation' => $message->getConversationconversation()->getIdconversation()]);
+    }
 }

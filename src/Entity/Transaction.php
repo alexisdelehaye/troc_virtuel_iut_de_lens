@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Transaction
  *
+ * @ApiResource()
  * @ORM\Table(name="transaction", indexes={@ORM\Index(name="idTypeTransaction_idx", columns={"idTypeTranasaction"}), @ORM\Index(name="idUserDemandeur_idx", columns={"idUserDemandeur"}), @ORM\Index(name="idUserOffrant_idx", columns={"idUserOffrant"}), @ORM\Index(name="idObjet_idx", columns={"idObjet"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")

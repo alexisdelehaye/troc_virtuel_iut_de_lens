@@ -1,3 +1,46 @@
-{{ form_start(form, {'action': path('search_objets'), 'method': 'POST'}) }}
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+    <a class="navbar-brand" href={{ path('objet_index') }}>Troc Virtuel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-{{ form_end(form) }}
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('objet_new') }}>Déposer une annonce</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('demande_index') }}>Demande</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('message_index') }}>Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('objet_showUsersObject') }}>Objets en votre possession</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('objet_showUsersObjectPret') }}>Vos objets prêtés</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('app_logout') }}>Se deconnecter</a>
+                </li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href={{ path('admin_objet_index') }}>Administration</a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href={{ path('app_login') }}>Se connecter</a>
+                </li>
+            {% endif %}
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            {{ form_start(form, {'action': path('search_objets'), 'method': 'POST'}) }}
+
+            {{ form_end(form) }}
+        </form>
+    </div>
+</nav>

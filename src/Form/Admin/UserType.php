@@ -2,8 +2,10 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Profil;
 use App\Entity\User;
 use App\Form\Type\RolesType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -23,6 +25,10 @@ class UserType extends AbstractType
             ->add('emailuser',EmailType::class)
             ->add('pseudo',TextType::class)
             ->add('passworduser',PasswordType::class)
+            ->add('idprofil', EntityType::class,[
+                'class' => Profil::class,
+                'choice_name' => 'nomprofil'
+            ])
             ->add('roles', RolesType::class)
         ;
 

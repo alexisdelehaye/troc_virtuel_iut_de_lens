@@ -1,0 +1,23 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ objet.nomobjet }} - Voir{% endblock %}
+
+{% block body %}
+    <h1>Objet {{ objet.nomobjet }}</h1>
+    <div class="container">
+        <h2>Liste des photos / </h2>
+        <div class="row">
+            {% for photo in objet.photos %}
+            <div class="col-sm">
+                <img src="{{ base_url }}{{ photo.cheminphoto }}" class="miniaphoto"/>
+                {% include 'admin/objet/_delete_photo_form.html.twig' %}
+
+            </div>
+                {% else %}
+                    <p>Pas de photos</p>
+                {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}

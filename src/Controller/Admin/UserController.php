@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\Admin\UserType;
+use App\Security\AppAccess;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,6 +86,23 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/{iduser}/ban", name="ban", methods={"POST"})
+     */
+    public function ban(Request $request, User $user): Response
+    {
+        $this->denyAccessUnlessGranted(AppAccess::ADMIN_USER_BAN, $user);
+        if ($this->isCsrfTokenValid('ban'.$user->getIduser(), $request->request->get('_token'))) {
+            $user->setBanni(!$user->isBanni()).
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'L\'utilisateur a été banni.');
+        }else{
+            $this->addFlash('error', 'Erreur lors du bannisement de l\'utilisateur.');
+        }
+
+        return $this->redirectToRoute('admin_user_show', ['iduser' => $user->getIduser()]);
     }
 
     /**

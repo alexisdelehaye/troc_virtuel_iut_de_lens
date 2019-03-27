@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
  *
+ * @ApiResource()
  * @ORM\Table(name="user", indexes={@ORM\Index(name="idProfil_idx", columns={"idProfil"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -75,11 +79,25 @@ class User implements UserInterface
      */
     private $idprofil;
 
-
     /**
      * @ORM\Column(type="array")
      */
     private $roles = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $banni = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Objet", mappedBy="idproprietaire")
+     */
+    private $objets;
+
+    public function __construct()
+    {
+        $this->objets = new ArrayCollection();
+    }
 
     public function getIduser(): ?int
     {
@@ -173,7 +191,6 @@ class User implements UserInterface
     public function __toString()
     {
         return $this->getNomuser().' '.$this->getPrenompersonne();
-        // TODO: Implement __toString() method.
     }
 
 
@@ -210,7 +227,6 @@ class User implements UserInterface
     public function getPassword()
     {
         return (string) $this->passworduser;
-        // TODO: Implement getPassword() method.
     }
 
     /**
@@ -222,7 +238,6 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
     }
 
     /**
@@ -243,14 +258,32 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
     }
-
 
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function isBanni(): ?bool
+    {
+        return $this->banni;
+    }
+
+    public function setBanni(bool $banni): self
+    {
+        $this->banni = $banni;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Objet[]
+     */
+    public function getObjets(): Collection
+    {
+        return $this->objets;
     }
 }

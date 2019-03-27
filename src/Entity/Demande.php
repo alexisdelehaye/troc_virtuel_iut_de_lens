@@ -25,7 +25,7 @@ class Demande
     /**
      * @var int|null
      *
-     * @ORM\Column(name="nomDemande", type="integer", nullable=true)
+     * @ORM\Column(name="nomDemande", type="text", length=65535, nullable=true)
      */
     private $nomdemande;
 
@@ -56,7 +56,7 @@ class Demande
     /**
      * @var \Typetransaction
      *
-     * @ORM\ManyToOne(targetEntity="Typetransaction")
+     * @ORM\ManyToOne(targetEntity="Typetransaction", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="idTypeTransaction", referencedColumnName="idtypetransaction")
      * })
@@ -78,12 +78,12 @@ class Demande
         return $this->iddemande;
     }
 
-    public function getNomdemande(): ?int
+    public function getNomdemande(): ?string
     {
         return $this->nomdemande;
     }
 
-    public function setNomdemande(?int $nomdemande): self
+    public function setNomdemande(?string $nomdemande): self
     {
         $this->nomdemande = $nomdemande;
 

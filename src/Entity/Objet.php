@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Objet
  *
+ * @ApiResource()
  * @ORM\Table(name="objet", indexes={@ORM\Index(name="idTransaction_idx", columns={"idTransaction"}), @ORM\Index(name="idUser_idx", columns={"idProprietaire"}), @ORM\Index(name="idCategorie_idx", columns={"idCategorie"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\ObjetRepository")
@@ -25,7 +29,7 @@ class Objet
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nomObjet", type="string", length=45, nullable=true)
+     * @ORM\Column(name="nomObjet", type="text", length=65535, nullable=true)
      */
     private $nomobjet;
 
@@ -72,6 +76,16 @@ class Objet
      * })
      */
     private $idproprietaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Photo", mappedBy="objetobjet")
+     */
+    private $photos;
+
+    public function __construct()
+    {
+        $this->photos = new ArrayCollection();
+    }
 
     public function getIdobjet(): ?int
     {
@@ -151,10 +165,17 @@ class Objet
     }
 
 
+    /**
+     * @return Collection|Photo[]
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
     public function __toString()
     {
         return $this->getNomobjet()." appartenant à ".$this->getIdproprietaire();
     }
-
 
 }
