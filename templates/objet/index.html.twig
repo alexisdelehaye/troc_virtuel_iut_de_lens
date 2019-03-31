@@ -7,7 +7,7 @@
 	<br/><a href="{{ path('objet_showUsersObject')}}" class="btn btn-primary">Liste de vos objets</a>
 	{% for categorie in categories %}
 		<tr>
-			<td><a href="{{ path('filter_objects', {'id': categorie,'id_categorie': categorie.idcategorie}) }}" class="btn btn-secondary">{{ categorie.nomcategorie }}</a></td>
+			<td><a href="{{ path('filter_objects', {'id': categorie.idcategorie}) }}" class="btn btn-secondary">{{ categorie.nomcategorie }}</a></td>
 		</tr>
 
 	{% endfor %}
@@ -38,10 +38,11 @@
 							<td><img style="width:50px;height: 50px;" src="{{ base_url }}{{photo.cheminphoto }}"/></td>
 						{% endif %}
 					{% endfor %}
-					<td><a href="{{ path('add_photo_to_objet', {'idobjet': objet.idobjet}) }}" class="link_show btn btn-success">Ajouter une image à l'objet</a></td>
 					<td><a href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}" class="btn btn-secondary">détails</a></td>
-					<td><a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}" class="btn btn-primary">éditer</a></td>
-					</td>
+                    {% if is_granted("OBJET_EDIT", objet) %}
+						<td><a href="{{ path('add_photo_to_objet', {'idobjet': objet.idobjet}) }}" class="link_show btn btn-success">Ajouter une image à l'objet</a></td>
+						<td><a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}" class="btn btn-primary">éditer</a></td>
+                    {% endif %}
 				</tr>
 			{% else %}
 				<tr>

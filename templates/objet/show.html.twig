@@ -7,25 +7,25 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Idobjet</th>
-                <td>{{ objet.idobjet }}</td>
-            </tr>
-            <tr>
-                <th>Nomobjet</th>
-                <td>{{ objet.nomobjet }}</td>
-            </tr>
-            <tr>
-                <th>Descriptionobjet</th>
-                <td>{{ objet.descriptionobjet }}</td>
-            </tr>
-            <tr>
-                <th>Disponible</th>
-                <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
-            </tr>
+        <tr>
+            <th>Idobjet</th>
+            <td>{{ objet.idobjet }}</td>
+        </tr>
+        <tr>
+            <th>Nomobjet</th>
+            <td>{{ objet.nomobjet }}</td>
+        </tr>
+        <tr>
+            <th>Descriptionobjet</th>
+            <td>{{ objet.descriptionobjet }}</td>
+        </tr>
+        <tr>
+            <th>Disponible</th>
+            <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
+        </tr>
         <tr>
             {% for photo in photosObjet %}
-            <td><img style="width:300px;height:300px;" src="{{ base_url }}{{photo.cheminphoto }}" /></td>
+                <td><img style="width:300px;height:300px;" src="{{ base_url }}{{ photo.cheminphoto }}"/></td>
             {% endfor %}
 
 
@@ -33,44 +33,52 @@
         </tbody>
 
     </table>
-    <td><a class="link_show" href="{{ path('add_photo_to_objet', {'idobjet':objet.idobjet}) }}">Ajouter une image descriptive à l'objet</a></td>
-    <a href="{{ path('conversation_new', {'objet': objet.idobjet}) }}">Faire une demande de don de cette objet au propriétaire {{ objet.idobjet }} </a>
-
-    <a href="{{ path('objet_index') }}">back to list</a>
-
-    <a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">edit</a>
-
-    {{ include('objet/_delete_form.html.twig') }}
-
-    {%  if DemandesObjet is not null %}
-        <br/> voici toutes les demandes par rapport à cette objet :
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Idconversation</th>
-            <th>Contenu</th>
-            <th>Date</th>
-            <th>Correspondant</th>
-            <th>actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for conversation in DemandesObjet %}
-            <tr>
-                <td>{{ conversation.idconversation }}</td>
-                <td>{{ conversation.contenu }}</td>
-                <td>{{ conversation.date }}</td>
-                <td> {{ conversation.idenvoyeur }}</td>
-                <td>
-                    <a href="{{ path('conversation_show', {'idconversation': conversation.idconversation}) }}">show</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% if is_granted("OBJET_EDIT", objet) %}
+        <p><a class="link_show" href="{{ path('add_photo_to_objet', {'idobjet':objet.idobjet}) }}">Ajouter une image
+                descriptive à l'objet</a></p>
+        <p><a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">modifier</a></p>
+        <p>{{ include('objet/_delete_form.html.twig') }}</p>
+        <br/>
+        <br/>
+        {% if DemandesObjet is not null %}
+            <br/> voici toutes les demandes par rapport à cette objet :
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Idconversation</th>
+                    <th>Contenu</th>
+                    <th>Date</th>
+                    <th>Correspondant</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for conversation in DemandesObjet %}
+                    <tr>
+                        <td>{{ conversation.idconversation }}</td>
+                        <td>{{ conversation.contenu }}</td>
+                        <td>{{ conversation.date }}</td>
+                        <td> {{ conversation.idenvoyeur }}</td>
+                        <td>
+                            <a href="{{ path('conversation_show', {'idconversation': conversation.idconversation}) }}">show</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Il n'y a aucune conversations pour le moment...</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        <a href="{{ path('conversation_new', {'objet': objet.idobjet}) }}">Faire une demande de don de cette objet à
+             {{ objet.idproprietaire }} </a>
     {% endif %}
+
+    <a href="{{ path('objet_index') }}">retour à la page d'accueil</a>
+
+
+
+
 {% endblock %}

@@ -24,7 +24,7 @@ class ObjetController extends AbstractController
     /**
      * @Route("/", name="objet_index", methods={"GET"})
      */
-    public function index(TokenStorageInterface $tokenStorage): Response
+    public function index(): Response
     {
         $objets = $this->getDoctrine()
             ->getRepository(Objet::class)
@@ -66,14 +66,13 @@ class ObjetController extends AbstractController
     /**
      * @Route("/{idobjet}", name="objet_show", methods={"GET"})
      */
-    public function show(Objet $objet, TokenStorageInterface $tokenStorage): Response
+    public function show(Objet $objet): Response
     {
-        $user = $tokenStorage->getToken()->getUser();
         $listePhotosObjet = $this->getDoctrine()
             ->getRepository(Photo::class)
             ->findBy(array('objetobjet' => $objet));
 
-        $listeDemandesObjet = ($user == $objet->getIdproprietaire()) ? $this->getDoctrine()
+        $listeDemandesObjet = ($this->getUser() == $objet->getIdproprietaire()) ? $this->getDoctrine()
             ->getRepository(Conversation::class)
             ->findBy(array('idobjetconcerne' => $objet->getIdobjet())) : null;
 
@@ -112,7 +111,7 @@ class ObjetController extends AbstractController
     /**
      * @Route("/{idobjet}", name="objet_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Objet $objet, TokenStorageInterface $tokenStorage): Response
+    public function delete(Request $request, Objet $objet): Response
     {
         $this->denyAccessUnlessGranted('OBJET_DELETE', $objet);
 
@@ -121,15 +120,14 @@ class ObjetController extends AbstractController
             $entityManager->remove($objet);
             $entityManager->flush();
         }
-
     }
 
     /**
-     * @Route("/filterObject/{id}", name="filter_objects", methods={"GET","POST"})
+     * @Route("/filterObject/{id}", name="filter_objects", methods={"GET","POST"}, defaults={"id"=null})
      */
-    public function FiltreObjetSelonCategorie(Request $request): Response
+    public function FiltreObjetSelonCategorie(Categorie $id=null): Response
     {
-        $objetsOfCategorie = $this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie' => $request->query->get('id_categorie')]);
+        $objetsOfCategorie = $this->getDoctrine()->getManager()->getRepository(Objet::class)->findBy(['idcategorie' => $id]);
         $categories = $this->getDoctrine()
             ->getRepository(Categorie::class)
             ->findAll();
@@ -144,7 +142,7 @@ class ObjetController extends AbstractController
     /**
      * @Route("/user/showUsersObject", name="objet_showUsersObject", methods={"GET"})
      */
-    public function showUsersObject(): Response // ne marche pas sans encune raison ( retourne tjr App\Entity\Objet object not found by the @ParamConverter annotation.)
+    public function showUsersObject(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $listeObjets = $this->getDoctrine()
