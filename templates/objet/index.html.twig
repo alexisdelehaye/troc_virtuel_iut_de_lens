@@ -3,7 +3,7 @@
 {% block title %}Objet index{% endblock %}
 
 {% block body %}
-	<h1>Liste des objets présents sur notre site</h1>
+	<h1>Liste des objets disponibles</h1>
 	<br/><a href="{{ path('objet_showUsersObject')}}" class="btn btn-primary">Liste de vos objets</a>
 	{% for categorie in categories %}
 		<tr>
@@ -11,47 +11,40 @@
 		</tr>
 
 	{% endfor %}
-	<div class="table-responsive-md">
-		<table class="table">
-			<thead class="thead-dark">
-			<tr>
-				<th>Id de l'objet</th>
-				<th>Nom de l'objet</th>
-				<th>Propriétaire de l'objet</th>
-				<th>Présentation de l'objet</th>
-				<th>Est-il encore disponible ?</th>
-				<th> Image principale de l'objet</th>
-				<th></th>
-				<th></th>
-			</tr>
-			</thead>
-			<tbody>
-			{% for objet in objets %}
-				<tr>
-					<td>{{ objet.idobjet }}</td>
-					<td>{{ objet.nomobjet }}</td>
-					<td>{{objet.idproprietaire}}</td>
-					<td>{{ objet.descriptionobjet }}</td>
-					<td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
-					{% for photo in photos %}
-						{% if objet == photo.objetobjet %}
-							<td><img style="width:50px;height: 50px;" src="{{ base_url }}{{photo.cheminphoto }}"/></td>
-						{% endif %}
-					{% endfor %}
-					<td><a href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}" class="btn btn-secondary">détails</a></td>
-                    {% if is_granted("OBJET_EDIT", objet) %}
-						<td><a href="{{ path('add_photo_to_objet', {'idobjet': objet.idobjet}) }}" class="link_show btn btn-success">Ajouter une image à l'objet</a></td>
-						<td><a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}" class="btn btn-primary">éditer</a></td>
-                    {% endif %}
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="5">no records found</td>
-				</tr>
 
-			{% endfor %}
-			</tbody>
-		</table>
+	<div class="album py-5">
+		{% for objet in objets %}
+			<div class="col-md-5 d-inline-block">
+				<a href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}" class="btn">
+					<div class="card mb-4 box-shadow">
+						{% for photo in photos %}
+							{% if objet == photo.objetobjet %}
+								<img class="card-img-top" src="{{ base_url }}{{ photo.cheminphoto }}" alt="{{ objet.nomobjet }}"/>
+							{% endif %}
+						{% endfor %}
+						<div class="card-body">
+							<p class="lead text-primary">{{ objet.nomobjet }}</p>
+							<p class="card-text">{{ objet.descriptionobjet }}</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div class="btn-group">
+									{% if is_granted("OBJET_EDIT", objet) %}
+										<a href="{{ path('add_photo_to_objet', {'idobjet': objet.idobjet}) }}" class="btn btn-sm btn-outline-secondary">Ajouter une image</a>
+										<a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}" class="btn btn-sm btn-outline-secondary">Modifier</a>
+									{% endif %}
+								</div>
+								<small class="text-muted">{{ objet.disponible ? 'Disponible' : 'Indisponible' }}</small>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		{% else %}
+			<tr>
+				<td colspan="5">no records found</td>
+			</tr>
+
+		{% endfor %}
+
 	</div>
 	<a href="{{ path('objet_new') }}" class="btn btn-primary">Ajouter un nouvel objet sur le site</a>
 {% endblock %}

@@ -4188,8 +4188,7 @@ input[type="button"].btn-block {
 
 .navbar-brand {
     display: inline-block;
-    padding-top: 0.3125rem;
-    padding-bottom: 0.3125rem;
+    padding: 1rem;
     margin-right: 1rem;
     font-size: 1.25rem;
     line-height: inherit;
@@ -8049,6 +8048,7 @@ button.bg-dark:focus {
 .pb-5,
 .py-5 {
     padding-bottom: 3rem !important;
+    text-align: center;
 }
 
 .pl-5,

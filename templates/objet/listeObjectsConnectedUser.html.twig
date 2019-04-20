@@ -1,27 +1,24 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h2>Liste des objets qque vous possédez actuellement, {{ user }}</h2>
+    <h2>Liste des objets que vous possédez actuellement, {{ user }}</h2>
 
     <table class="table">
         <thead>
         <tr>
             <th>Nom de l'objet</th>
-            <th>Propriétaire de l'objet</th>
-            <th>Présentation de l'objet</th>
+            <th>Description</th>
             <th>Est-il encore disponible ?</th>
         </tr>
         </thead>
         <tbody>
         {% for objet in objets %}
             <tr>
-                <td>{{ objet.idobjet }}</td>
-                <td>{{objet.idproprietaire}}</td>
                 <td>{{ objet.nomobjet }}</td>
                 <td>{{ objet.descriptionobjet }}</td>
-                <td>{{ objet.disponible ? 'Yes' : 'No' }}</td>
-                <td><a class="link_show" href="{{ path('add_photo_to_objet', {'idobjet' : objet.idobjet}) }}">Ajouter une image descriptive à l'objet</a></td>
-                <td><a href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}">show</a></td>
-                <td><a href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">edit</a></td>
+                <td>{{ objet.disponible ? 'Disponible' : 'Indisponible' }}</td>
+                <td><a class="btn btn-primary" href="{{ path('add_photo_to_objet', {'idobjet' : objet.idobjet}) }}">Ajouter une image descriptive à l'objet</a></td>
+                <td><a class="btn btn-secondary" href="{{ path('objet_show', {'idobjet': objet.idobjet}) }}">Voir</a></td>
+                <td><a class="btn btn-danger" href="{{ path('objet_edit', {'idobjet': objet.idobjet}) }}">Modifier</a></td>
             </tr>
         {% else %}
             <tr>
@@ -32,5 +29,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('objet_new') }}">Ajouter un nouvelle objet au site</a>
+    <a class="btn btn-primary" href="{{ path('objet_new') }}">Ajouter un nouvelle objet</a>
 {% endblock %}
